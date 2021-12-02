@@ -18,7 +18,7 @@ WORKDIR /app
 
 RUN apt-get update && \
     apt-get install --yes build-essential && \
-    pip install –upgrade pip && \
+    pip install –-upgrade pip && \
     pip install --upgrade --no-cache-dir starlette uvicorn[standard] aiohttp aiodocker && \
     apt-get purge build-essential && \
     apt-get autoremove --yes && \
