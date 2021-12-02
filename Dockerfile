@@ -12,11 +12,19 @@ COPY client .
 RUN npm run build
 
 
-FROM python:3.9-slim
+FROM python:3.10-slim
 
 WORKDIR /app
 
-RUN pip install --upgrade --no-cache-dir starlette uvicorn[standard] aiohttp aiodocker
+RUN apt-get update && \
+    apt-get install --yes build-essential && \
+    pip install –upgrade pip && \
+    pip install --upgrade --no-cache-dir starlette uvicorn[standard] aiohttp aiodocker && \
+    apt-get purge build-essential && \
+    apt-get autoremove --yes && \
+    apt-get clean --yes && \
+    rm -rf /var/lib/apt/lists/*
+    
 
 EXPOSE 8080/tcp
 
