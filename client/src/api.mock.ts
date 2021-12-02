@@ -1,4 +1,3 @@
-const WebSocketBase = WebSocket
 
 function mockResponse(body) {
     switch (body.request) {
@@ -20,7 +19,7 @@ function mockResponse(body) {
                 '2b7eb6b9d2f7fd2dd26738500a81a16310f78e46eea2f9c2a27ed876d85d8587': '/cool_web_app_backend_1',
                 '2b7eb6b9d2f7fd2dd26738500a81a16310f78e46eea2f9c2a27ed876d85d8588': '/cool_web_app_gateway_1',
             }
-            return `{"response": "get_container_info", "payload": {"id": "${body.payload.container_id}", "name": "${container_name[body.payload.container_id]}", "status": "running", "command": "/docker-entrypoint.sh nginx -g daemon off;", "created_at": "2021-12-02T10:33:16.628618832Z", "started_at": "2021-12-02T10:33:17.015866729Z", "finished_at": "0001-01-01T00:00:00Z", "crashes": 0, "env": {"PATH": "/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin", "NGINX_VERSION": "1.21.1", "NJS_VERSION": "0.6.1", "PKG_RELEASE": "1"}, "labels": {"casa.admin.full": "user1,user2", "maintainer": "NGINX Docker Maintainers <docker-maint@nginx.com>"}, "image": {"name": "nginx:alpine", "hash": "sha256:b9e2356ea1be9452f3777a587b0b6a30bc16c295fe6190eda6a0776522f27439"}, "mem": {"used": 10452992, "max_used": 19345408, "total": 1563892531}, "cpu": {"perc": ${Math.random() * 10}}, "net": {"rx_bytes": 18201, "tx_bytes": 0}, "ports": ["80/tcp"]}}`
+            return `{"response": "get_container_info", "payload": {"id": "${body.payload.container_id}", "name": "${container_name[body.payload.container_id]}", "status": "running", "command": "/docker-entrypoint.sh nginx -g daemon off;", "created_at": "2021-12-02T10:33:16.628618832Z", "started_at": "2021-12-02T10:33:17.015866729Z", "finished_at": "0001-01-01T00:00:00Z", "crashes": 0, "env": {"PATH": "/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin", "NGINX_VERSION": "1.21.1", "NJS_VERSION": "0.6.1", "PKG_RELEASE": "1"}, "labels": {"casa.admin.full": "user1,user2", "maintainer": "NGINX Docker Maintainers <docker-maint@nginx.com>"}, "image": {"name": "nginx:alpine", "hash": "sha256:b9e2356ea1be9452f3777a587b0b6a30bc16c295fe6190eda6a0776522f27439"}, "mem": {"used": 10452992, "max_used": 19345408, "total": 52428800}, "cpu": {"perc": ${Math.random() * 10}}, "net": {"rx_bytes": 18201, "tx_bytes": 0}, "ports": ["80/tcp"]}}`
         case 'get_container_logs':
             if (body.payload.onlynew)
                 return `{"response": "get_container_logs", "payload":""}`
@@ -47,9 +46,37 @@ function mockResponse(body) {
     }
 }
 
-export class WebSocketMock extends WebSocketBase {
+export class WebSocketMock implements WebSocket {
     constructor(url: string) {
-        super(url);
+    }
+    binaryType: BinaryType
+    bufferedAmount: number
+    extensions: string
+    onclose: (this: WebSocket, ev: CloseEvent) => any
+    onerror: (this: WebSocket, ev: Event) => any
+    onmessage: (this: WebSocket, ev: MessageEvent<any>) => any
+    onopen: (this: WebSocket, ev: Event) => any
+    protocol: string
+    readyState: number
+    url: string
+    close(code?: number, reason?: string): void {
+    }
+    CLOSED: number
+    CLOSING: number
+    CONNECTING: number
+    OPEN: number
+    addEventListener<K extends keyof WebSocketEventMap>(type: K, listener: (this: WebSocket, ev: WebSocketEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void
+    addEventListener(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | AddEventListenerOptions): void
+    addEventListener(type: any, listener: any, options?: any): void {
+        throw new Error("Method not implemented.")
+    }
+    removeEventListener<K extends keyof WebSocketEventMap>(type: K, listener: (this: WebSocket, ev: WebSocketEventMap[K]) => any, options?: boolean | EventListenerOptions): void
+    removeEventListener(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | EventListenerOptions): void
+    removeEventListener(type: any, listener: any, options?: any): void {
+        throw new Error("Method not implemented.")
+    }
+    dispatchEvent(event: Event): boolean {
+        throw new Error("Method not implemented.")
     }
 
     send(requestData: string) {
@@ -84,6 +111,5 @@ export class WebSocketMock extends WebSocketBase {
             }
         }
     }
-}
 
-WebSocket = WebSocketMock as any
+}
