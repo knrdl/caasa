@@ -16,7 +16,7 @@ FROM python:3.9-slim
 
 WORKDIR /app
 
-RUN pip install --upgrade --no-cache-dir starlette uvicorn aiohttp aiodocker
+RUN pip install --upgrade --no-cache-dir starlette uvicorn[standard] aiohttp aiodocker
 
 EXPOSE 8080/tcp
 
