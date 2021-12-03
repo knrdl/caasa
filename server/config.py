@@ -1,11 +1,11 @@
 import os
 from typing import Literal, get_args, Final, Set, Dict
 
-AUTH_SERVICE_URL = os.getenv('AUTH_SERVICE_URL')
+AUTH_API_URL = os.getenv('AUTH_API_URL')
 AUTH_API_FIELD_USERNAME = os.getenv('AUTH_API_FIELD_USERNAME', 'username')
 AUTH_API_FIELD_PASSWORD = os.getenv('AUTH_API_FIELD_PASSWORD', 'password')
-if not AUTH_SERVICE_URL:
-    raise Exception('please provide AUTH_SERVICE_URL env var')
+if not AUTH_API_URL:
+    raise Exception('please provide AUTH_API_URL env var')
 
 PermissionType = Literal[
     'info', 'info-annotations', 'state', 'logs', 'term', 'procs', 'files', 'files-read', 'files-write']

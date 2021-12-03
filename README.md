@@ -30,7 +30,7 @@ services:
     environment:
       ROLES_casa_admin_basic: info, state, logs, procs, files, files-read
       ROLES_casa_admin_full: info, info-annotations, state, logs, term, procs, files, files-read, files-write
-      AUTH_API: https://identity.mycompany.com/login
+      AUTH_API_URL: https://identity.mycompany.com/login
       AUTH_API_FIELD_USERNAME: username
       AUTH_API_FIELD_PASSWORD: password
     ports:
@@ -57,11 +57,11 @@ Roles are defined via environment variables and might contain these permissions:
 
 ### 2. Authentication
 
-To perform logins CASA sends HTTP-POST requests to `AUTH_API` containing a JSON body with
+To perform logins CASA sends HTTP-POST requests to `AUTH_API_URL` containing a JSON body with
 fields `AUTH_API_FIELD_USERNAME` and `AUTH_API_FIELD_PASSWORD`. A 2XX response code (e.g. *200 OK*) represents a
 successful login.
 
-For tests/demos you can point `AUTH_API` to e.g. https://example.org. ***Do not use real credentials then!***
+For tests/demos you can point `AUTH_API_URL` to e.g. https://example.org. ***Do not use real credentials then!***
 
 ### 3. Annotate containers
 
