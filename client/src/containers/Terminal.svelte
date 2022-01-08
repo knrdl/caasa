@@ -99,10 +99,10 @@
 
 {#if isTerminalOpen}
     <div class="d-flex justify-content-end mb-2">
-        <button type="button" class="btn mx-3" title="Scroll to Bottom" on:click={fullscreen}>
+        <button type="button" class="btn mx-3" title="Fullscreen" on:click={fullscreen}>
             <Fa icon={faExpandArrowsAlt} size="lg" color="#666"/>
         </button>
-        <button type="button" class="btn mx-3" title="Scroll to Bottom" on:click={()=>api.send('close_terminal')}>
+        <button type="button" class="btn mx-3" title="Close Terminal" on:click={()=>api.send('close_terminal')}>
             <Fa icon={faWindowClose} size="lg" color="#666"/>
         </button>
     </div>

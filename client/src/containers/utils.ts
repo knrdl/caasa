@@ -14,8 +14,9 @@ export function bytes2human(value: number) {
 }
 
 export function fmtDate(date: string) {
-    const d = new Date(date)
-    return `${d.toLocaleDateString()} ${d.toLocaleTimeString()}`
+    return new Date(date).toLocaleString(undefined, {
+        year: 'numeric', month: '2-digit', day: '2-digit', hour: '2-digit', minute: '2-digit'
+    })
 }
 
 export function downloadBlob(blob: Blob, filename: string) {

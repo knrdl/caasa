@@ -74,7 +74,7 @@
                         on:click={() => logElem.scrollTop = logElem.scrollHeight}>
                     <Fa icon={faChevronCircleDown} size="lg" color="#666"/>
                 </button>
-                <button type="button" class="btn mx-1" title="Scroll to Bottom" on:click={fullscreen}>
+                <button type="button" class="btn mx-1" title="Fullscreen" on:click={fullscreen}>
                     <Fa icon={faExpandArrowsAlt} size="lg" color="#666"/>
                 </button>
             </div>
