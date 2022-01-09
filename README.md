@@ -77,4 +77,4 @@ container `casa_demo` via CASA web interface.
 
 ## Screenshots
 
-TODO
+![Screenshot](screenshot.png)
