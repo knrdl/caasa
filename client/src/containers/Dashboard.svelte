@@ -325,10 +325,10 @@
                         <tbody>
                         {#each Object.entries(container.env).sort(([key1,], [key2,]) => key1.localeCompare(key2)) as [key, value]}
                             <tr>
-                                <td class="text-end border-end">
+                                <td class="text-end border-end text-break">
                                     {key}
                                 </td>
-                                <td>
+                                <td class="text-break">
                                     {value}
                                 </td>
                             </tr>
@@ -346,10 +346,10 @@
                         <tbody>
                         {#each Object.entries(container.labels).sort(([key1,], [key2,]) => key1.localeCompare(key2)) as [key, value]}
                             <tr>
-                                <td class="text-end border-end">
+                                <td class="text-end border-end text-break">
                                     {key}
                                 </td>
-                                <td>
+                                <td class="text-break">
                                     {value}
                                 </td>
                             </tr>

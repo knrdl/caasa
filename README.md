@@ -45,15 +45,15 @@ services:
 
 Roles are defined via environment variables and might contain these permissions:
 
-* info: display basic container metadata
-* info-annotations: display environment variables and container labels
-* state: allow start, stop, restart container
-* logs: display container terminal output
-* term: spawn terminal with root privileges inside container
-* procs: display running processes
-* files: list files and directories in container
-* files-read: user can download files from container
-* files-write: user can upload files to container
+* **info**: display basic container metadata
+* **info-annotations**: display environment variables and container labels
+* **state**: allow start, stop, restart container
+* **logs**: display container terminal output
+* **term**: spawn (root privileged) terminal inside container
+* **procs**: display running processes
+* **files**: list files and directories in container
+* **files-read**: user can download files from container
+* **files-write**: user can upload files to container
 
 ### 2. Authentication
 
@@ -75,6 +75,6 @@ docker run -it --rm --name casa_demo --label casa.admin.full=user1,user2 nginx:a
 In this example the users `user1` and `user2` are granted the rights of the `casa.admin.full` role for the
 container `casa_demo` via CASA web interface.
 
-## Screenshots
+## Screenshot
 
 ![Screenshot](screenshot.png)
