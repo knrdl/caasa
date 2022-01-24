@@ -101,7 +101,7 @@ async def get_container_info(username: str, container_id: str):
         env_vars = {}
         if 'info-annotations' in permissions:
             for env in container['Config']['Env']:
-                key, value = env.split('=')
+                key, value = env.split('=', 1)
                 env_vars[key] = value
         else:
             env_vars = None
