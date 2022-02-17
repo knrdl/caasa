@@ -87,7 +87,7 @@ async def fetch_logs(username: str, container_id: str, since: int):
                 msg = await response.content.readline()
                 if not msg:
                     break
-                loglines += msg[8:].decode('utf-8')  # first 8 bytes are header
+                loglines += msg.decode('utf-8')
         return loglines
     else:
         raise Exception('unauthorized to access container')
