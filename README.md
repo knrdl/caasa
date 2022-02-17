@@ -2,8 +2,8 @@
 
 ## Container as a Service Admin
 
-| [Github](https://github.com/knrdl/casa)      | [Docker Hub](https://hub.docker.com/r/knrdl/casa) | [Demo](https://knrdl.github.io/casa/) |
-| ----------- | ----------- | ----------- |
+| [Github](https://github.com/knrdl/casa)      | [Docker Hub](https://hub.docker.com/r/knrdl/casa) | [Demo](https://knrdl.github.io/casa/) | [![CI](https://github.com/knrdl/casa/actions/workflows/docker-image.yml/badge.svg)](https://github.com/knrdl/casa/actions/workflows/docker-image.yml)
+| ----------- | ----------- | ----------- | ----------- |
 
 Outsource the administration of a handful of containers to your co-workers.
 
