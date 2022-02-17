@@ -66,7 +66,7 @@
 {#if loading}
     <LoadingScreen/>
 {/if}
-<div class="d-flex pb-5 align-items-start">
+<div class="d-flex pb-3 align-items-start">
     <div class="d-flex flex-column me-5 container-list">
         {#if containers}
             {#if containers.length === 0}
@@ -136,7 +136,7 @@
                         </li>
                     {/if}
                 </ul>
-                <div class="card-body">
+                <div class="card-body py-4">
                     {#if tab === 'info'}
                         <div in:slide|local>
                             <Dashboard container_id={selectedContainer.id}

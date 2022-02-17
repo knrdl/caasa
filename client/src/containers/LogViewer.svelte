@@ -26,10 +26,13 @@
 
     onMount(() => {
         api.register<string>('get_container_logs', loglines => {
-            logs += stripAnsi(loglines)
             loading = false
-            if (loglines)
-                scroll2bottom()
+            if (loglines) {
+                let scrollToBottom = !logs || (logElem && logElem.scrollTop >= logElem.scrollHeight - logElem.clientHeight)
+                logs += stripAnsi(loglines)
+                if (scrollToBottom)
+                    tick().then(() => logElem.scrollTop = logElem.scrollHeight)
+            }
         }, (err) => messageBus.add({text: err, type: 'error'}))
 
         intervalHandler = setInterval(() => {
@@ -41,13 +44,6 @@
         clearInterval(intervalHandler)
         api.unregister('get_container_logs')
     })
-
-    function scroll2bottom() {
-        tick().then(() => {
-            logElem.scrollIntoView(true)
-            logElem.scrollTop = logElem.scrollHeight
-        })
-    }
 
     function fullscreen() {
         if (logElem?.requestFullscreen) {
@@ -78,7 +74,7 @@
                     <Fa icon={faExpandArrowsAlt} size="lg" color="#666"/>
                 </button>
             </div>
-            <pre bind:this={logElem}>{logs}</pre>
+            <pre bind:this={logElem} class="mb-0">{logs}</pre>
         {/if}
     {/if}
 </div>
@@ -86,8 +82,9 @@
 <style>
     pre {
         scroll-behavior: smooth;
-        max-height: calc(100vh - 300px);
+        max-height: calc(100vh - 280px);
         outline: 1px solid #ccc9;
+        padding: 1rem;
     }
 
     :global(html.dark) pre {

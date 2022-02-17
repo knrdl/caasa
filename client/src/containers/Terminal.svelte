@@ -106,7 +106,7 @@
             <Fa icon={faWindowClose} size="lg" color="#666"/>
         </button>
     </div>
-    <div bind:this={terminalContainer} class="border" style="height: calc(100vh - 300px)"></div>
+    <div bind:this={terminalContainer} class="border" style="height: calc(100vh - 280px)"></div>
 {:else}
     <form class="container login-form" on:submit|preventDefault={openTerm} transition:slide|local>
         <div class="container" style="max-width: 400px">
