@@ -61,7 +61,7 @@ To perform logins CASA sends HTTP-POST requests to `AUTH_API_URL` containing a J
 fields `AUTH_API_FIELD_USERNAME` and `AUTH_API_FIELD_PASSWORD`. A 2XX response code (e.g. *200 OK*) represents a
 successful login.
 
-For tests/demos you can point `AUTH_API_URL` to e.g. https://example.org. ***Do not use real credentials then!***
+> For tests/demos you can point `AUTH_API_URL` to e.g. https://example.org and use any username/password. ***Do not use real credentials then!***
 
 ### 3. Annotate containers
 
