@@ -87,7 +87,12 @@ async def fetch_logs(username: str, container_id: str, since: int):
                 msg = await response.content.readline()
                 if not msg:
                     break
-                loglines += msg.decode('utf-8')
+                msg_header = msg[:8]  # first 8 bytes are usually header
+                stdout, stderr = 0x01, 0x02
+                if msg_header[0] in (stdout, stderr):  # message has header
+                    loglines += msg[8:].decode('utf-8')
+                else:  # some docker versions leave the header out
+                    loglines += msg.decode('utf-8')
         return loglines
     else:
         raise Exception('unauthorized to access container')
