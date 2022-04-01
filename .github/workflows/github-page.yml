@@ -19,10 +19,10 @@ jobs:
           sed -i "s/username: string = ''/username: string = 'admin'/" client/src/auth/Login.svelte
           sed -i "s/password: string = ''/password: string = '123456'/" client/src/auth/Login.svelte
           sed -i "s|// MOCK_PLACEHOLDER|import { WebSocketMock as WebSocket } from './api.mock'|" client/src/api.ts
-      - run: npm install && npm run build
+      - run: cd client && npm install && npm run build
       - name: Deploy
         uses: peaceiris/actions-gh-pages@v3
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
-          publish_dir: ./public
+          publish_dir: ./client/public
 
