@@ -1,5 +1,5 @@
-// import { WebSocketMock as WebSocket } from "./api.mock"
-
+// MOCK_PLACEHOLDER
+// see .github/workflows/github-page.yml
 
 let ws: WebSocket
 

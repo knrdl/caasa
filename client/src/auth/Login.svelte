@@ -6,9 +6,9 @@
     import {createEventDispatcher, onDestroy, onMount} from "svelte"
     import {messageBus} from "../messages/message-store"
 
-    export let username: string = ''
+    export let username: string = ''  // on modify update reference in .github/workflows/github-page.yml
+    let password: string = ''  // on modify update reference in .github/workflows/github-page.yml
     let loading: boolean = false
-    let password: string = ''
     let errMsg = ''
 
     const dispatch = createEventDispatcher()

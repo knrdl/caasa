@@ -1,0 +1,28 @@
+name: Github Page Publish
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  github-page:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions/setup-node@v2
+        with:
+          node-version: '16'
+          cache: 'npm'
+      - name: apply demo customizations
+        run: |
+          sed -i "s/username: string = ''/username: string = 'admin'/" client/src/auth/Login.svelte
+          sed -i "s/password: string = ''/password: string = '123456'/" client/src/auth/Login.svelte
+          sed -i "s|// MOCK_PLACEHOLDER|import { WebSocketMock as WebSocket } from './api.mock'|" client/src/api.ts
+      - run: npm install && npm run build
+      - name: Deploy
+        uses: peaceiris/actions-gh-pages@v3
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: ./public
+
