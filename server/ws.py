@@ -1,8 +1,10 @@
 import json
+import sys
 
 from starlette.datastructures import State
 from starlette.endpoints import WebSocketEndpoint
 from starlette.websockets import WebSocket
+from urllib.parse import urlparse
 
 ws_actions = {}
 
@@ -38,6 +40,21 @@ async def send_json(websocket: WebSocket, action: str, json_payload):
 
 
 class WebSocketHandler(WebSocketEndpoint):
+    async def on_connect(self, websocket: WebSocket):
+        # check for same request origin of webclient url and websocket opener
+        # (needed because websocket isn't affected by CORS)
+        origin = urlparse(websocket.headers.get('origin'))
+        host = websocket.url
+        if origin.netloc and host.netloc and origin.netloc == host.netloc:
+            if origin.scheme != 'https':
+                print('Insecure HTTP request detected. Please serve the application via HTTPS.', file=sys.stderr)
+            await websocket.accept()
+        else:
+            print('Cross-Site WebSocket Hijacking detected. '
+                  'If the application is served behind a reverse-proxy, you maybe forgot to pass the host header.',
+                  file=sys.stderr)
+            await websocket.close()
+
     async def on_receive(self, websocket: WebSocket, data):
         body = json.loads(data)
         action, payload = body['request'], body.get('payload', {})
