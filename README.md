@@ -46,7 +46,7 @@ services:
 Roles are defined via environment variables and might contain these permissions:
 
 * **info**: display basic container metadata
-* **info-annotations**: display environment variables and container labels
+* **info-annotations**: display environment variables and container labels (may contain secrets)
 * **state**: allow start, stop, restart container
 * **logs**: display container terminal output
 * **term**: spawn (root privileged) terminal inside container
