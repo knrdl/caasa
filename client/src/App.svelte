@@ -9,23 +9,30 @@
     import Fa from "svelte-fa"
     import {faHouseUser, faSignOutAlt} from "@fortawesome/free-solid-svg-icons"
 
-    let isUserLoggedIn: boolean = false
+    let loggedInUsername: string | null = null
+    let userCanLogout: boolean = true
     let showHostInfo: boolean = true
 
     onMount(async () => {
         api.register('ws-error', null, (err) => messageBus.add({text: err, type: 'error'}))
         api.register('ws-close', null, (err) => {
             messageBus.add({text: err, type: 'error'})
-            isUserLoggedIn = false
+            loggedInUsername = null
             alert('Lost connection. Reconnect?')
             window.location.reload()
+        })
+        api.register<{ username: string }>('webproxy_auth', ({username}) => {
+            loggedInUsername = username
+            userCanLogout = false
+        }, err => {
+            messageBus.add({text: err, type: 'error'})
         })
         await api.init()
     })
 
     function logout() {
         api.close()
-        isUserLoggedIn = false
+        loggedInUsername = null
         messageBus.add({text: 'Logged out', type: 'info'})
         window.location.reload()
     }
@@ -51,17 +58,17 @@
         </a>
         <div class="items-right">
             <ThemeSwitcher/>
-            {#if isUserLoggedIn}
-                <button type="button" class="btn mx-2" on:click={logout} title="Logout">
+            {#if loggedInUsername && userCanLogout}
+                <button type="button" class="btn mx-2" on:click={logout} title="Logout {loggedInUsername}">
                     <Fa icon={faSignOutAlt} color="#333" size="2x"/>
                 </button>
             {/if}
         </div>
     </header>
-    {#if isUserLoggedIn}
+    {#if loggedInUsername}
         <Index bind:showHostInfo={showHostInfo}/>
     {:else}
-        <Login on:login={() => isUserLoggedIn = true}/>
+        <Login on:login={({username}) => loggedInUsername = username}/>
     {/if}
 </main>
 

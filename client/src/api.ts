@@ -5,6 +5,7 @@ let ws: WebSocket
 
 type ApiRequest =
     'login'
+    | 'webproxy_auth'
     | 'get_system_info'
     | 'get_container_list'
     | 'get_container_info'

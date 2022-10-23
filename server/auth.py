@@ -1,11 +1,22 @@
 import aiohttp
+from starlette.datastructures import State
 
-from config import AUTH_API_URL, AUTH_API_FIELD_USERNAME, AUTH_API_FIELD_PASSWORD
+from config import AUTH_API_URL, AUTH_API_FIELD_USERNAME, AUTH_API_FIELD_PASSWORD, WEBPROXY_AUTH_HEADER
 
 
-async def login(username: str, password: str):
-    async with aiohttp.ClientSession() as session:
-        async with session.post(AUTH_API_URL, json={AUTH_API_FIELD_USERNAME: username,
-                                                    AUTH_API_FIELD_PASSWORD: password}) as response:
-            if not response.ok:
-                raise Exception(await response.text())
+async def auth_api_login(username: str, password: str):
+    if AUTH_API_URL:
+        async with aiohttp.ClientSession() as session:
+            async with session.post(AUTH_API_URL, json={AUTH_API_FIELD_USERNAME: username,
+                                                        AUTH_API_FIELD_PASSWORD: password}) as response:
+                if not response.ok:
+                    raise Exception(await response.text())
+    else:
+        raise Exception('auth api login is disabled')
+
+
+async def webproxy_login(state: State):
+    username = None
+    if WEBPROXY_AUTH_HEADER:
+        username = state.websocket.headers.get(WEBPROXY_AUTH_HEADER, None)
+    return username

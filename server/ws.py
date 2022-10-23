@@ -1,21 +1,33 @@
 import json
 import sys
+import traceback
+from typing import Callable, Any, Awaitable
 
 from starlette.datastructures import State
 from starlette.endpoints import WebSocketEndpoint
 from starlette.websockets import WebSocket
 from urllib.parse import urlparse
 
-ws_actions = {}
+AsyncFuncType = FuncType = Callable[[Any], Awaitable[Any]]
+
+_ws_actions: dict[str, AsyncFuncType] = {}
+_ws_on_connect_handler: list[AsyncFuncType] = []
+
+
+def on_connect():
+    def wrapper(func: AsyncFuncType):
+        _ws_on_connect_handler.append(func)
+
+    return wrapper
 
 
 def cmd(auth: bool):
     def wrapper(func):
         if auth:
-            ws_actions[func.__name__] = _auth_required(func)
+            _ws_actions[func.__name__] = _auth_required(func)
         else:
-            ws_actions[func.__name__] = func
-        return ws_actions[func.__name__]
+            _ws_actions[func.__name__] = func
+        return _ws_actions[func.__name__]
 
     return wrapper
 
@@ -40,6 +52,7 @@ async def send_json(websocket: WebSocket, action: str, json_payload):
 
 
 class WebSocketHandler(WebSocketEndpoint):
+
     async def on_connect(self, websocket: WebSocket):
         # check for same request origin of webclient url and websocket opener
         # (needed because websocket isn't affected by CORS)
@@ -49,19 +62,33 @@ class WebSocketHandler(WebSocketEndpoint):
             if origin.scheme != 'https':
                 print('Insecure HTTP request detected. Please serve the application via HTTPS.', file=sys.stderr)
             await websocket.accept()
+            await self.after_connect(websocket)
         else:
             print('Cross-Site WebSocket Hijacking detected. '
                   'If the application is served behind a reverse-proxy, you maybe forgot to pass the host header.',
                   file=sys.stderr)
             await websocket.close()
 
-    async def on_receive(self, websocket: WebSocket, data):
+    async def after_connect(self, websocket: WebSocket):
+        websocket.state.websocket = websocket
+        for handler in _ws_on_connect_handler:
+            try:
+                result = await handler(websocket.state)
+                if type(result) == tuple and len(result) == 2:
+                    action, response = result
+                    await send_json(websocket, action, response)
+                elif result is not None:
+                    raise Exception('invalid response format for on_connect handler')
+            except Exception as e:
+                traceback.print_exc()
+                await websocket.send_json({'response': 'connection_init', 'error': str(e)})
+
+    async def on_receive(self, websocket: WebSocket, data: str):
         body = json.loads(data)
         action, payload = body['request'], body.get('payload', {})
-        if action in ws_actions:
+        if action in _ws_actions:
             try:
-                websocket.state.websocket = websocket
-                response = await ws_actions[action](websocket.state, **payload)
+                response = await _ws_actions[action](websocket.state, **payload)
                 if response is not None:
                     if type(response) == tuple and len(response) == 2 and type(response[0]) == dict and type(
                             response[1]) == bytes:
@@ -70,6 +97,7 @@ class WebSocketHandler(WebSocketEndpoint):
                     else:
                         await send_json(websocket, action, response)
             except Exception as e:
+                traceback.print_exc()
                 await websocket.send_json({'response': action, 'error': str(e)})
         else:
             await websocket.send_json({'response': action, 'error': 'unknown command'})

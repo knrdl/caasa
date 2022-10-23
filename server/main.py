@@ -17,9 +17,17 @@ import docker
 import ws
 
 
+@ws.on_connect()
+async def webproxy_auth(state: State):
+    username = await auth.webproxy_login(state)
+    if username:
+        state.username = username.lower()
+        return 'webproxy_auth', {'username': state.username}
+
+
 @ws.cmd(auth=False)
 async def login(state: State, username: str, password: str):
-    await auth.login(username, password)
+    await auth.auth_api_login(username, password)
     state.username = username.lower()
     return {'username': state.username}
 
