@@ -174,10 +174,12 @@
                                 <DropdownItem on:click={() => loadPath(mount.destination)}>
                                     <div class="d-flex justify-content-between align-items-center">
                                         <span>{mount.destination}</span>
-                                        {#if mount.readonly}
-                                            <span class="badge bg-warning ms-2">readonly</span>
-                                        {/if}
-                                        <span class="badge bg-secondary ms-2">{mount.type}</span>
+                                        <span>
+                                            {#if mount.readonly}
+                                                <span class="badge bg-warning ms-2">readonly</span>
+                                            {/if}
+                                            <span class="badge bg-secondary ms-2">{mount.type}</span>
+                                        </span>
                                     </div>
                                 </DropdownItem>
                             {/each}

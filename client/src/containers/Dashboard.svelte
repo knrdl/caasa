@@ -398,5 +398,6 @@
 
     .icon-left {
         width: 2.75rem;
+        color: gray;
     }
 </style>

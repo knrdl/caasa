@@ -81,7 +81,8 @@
                              class:bg-warning={['created', 'paused', 'restarting'].includes(container.status)}
                              style="width: 10px; flex: none"></div>
                         <div class="p-2 pe-4">
-                            <div class="text-muted text-uppercase">{container.namespace || ''}</div>
+                            <div class:text-muted={selectedContainer?.id !== container.id}
+                                 class="text-uppercase">{container.namespace || ''}</div>
                             <div>{container.name}</div>
                         </div>
                     </div>
