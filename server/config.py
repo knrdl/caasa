@@ -5,9 +5,7 @@ AUTH_API_URL = os.getenv('AUTH_API_URL')
 AUTH_API_FIELD_USERNAME = os.getenv('AUTH_API_FIELD_USERNAME', 'username')
 AUTH_API_FIELD_PASSWORD = os.getenv('AUTH_API_FIELD_PASSWORD', 'password')
 WEBPROXY_AUTH_HEADER = os.getenv('WEBPROXY_AUTH_HEADER')
-if AUTH_API_URL and WEBPROXY_AUTH_HEADER:
-    raise Exception('Only one authentication method can be configured at the same time.')
-elif not AUTH_API_URL and not WEBPROXY_AUTH_HEADER:
+if not AUTH_API_URL and not WEBPROXY_AUTH_HEADER:
     raise Exception('No authentication method given. Please provide the environment variables.')
 
 PermissionType = Literal[

@@ -1,10 +1,12 @@
+from typing import Optional
+
 import aiohttp
 from starlette.datastructures import State
 
 from config import AUTH_API_URL, AUTH_API_FIELD_USERNAME, AUTH_API_FIELD_PASSWORD, WEBPROXY_AUTH_HEADER
 
 
-async def auth_api_login(username: str, password: str):
+async def auth_api_login(username: str, password: str) -> None:
     if AUTH_API_URL:
         async with aiohttp.ClientSession() as session:
             async with session.post(AUTH_API_URL, json={AUTH_API_FIELD_USERNAME: username,
@@ -16,7 +18,10 @@ async def auth_api_login(username: str, password: str):
 
 
 async def webproxy_login(state: State):
-    username = None
+    username: Optional[str] = None
     if WEBPROXY_AUTH_HEADER:
         username = state.websocket.headers.get(WEBPROXY_AUTH_HEADER, None)
+        if not username:
+            raise Exception(
+                f'web proxy auth has been configured but the http request lacks the required header "{WEBPROXY_AUTH_HEADER}"')
     return username

@@ -68,7 +68,7 @@
     {#if loggedInUsername}
         <Index bind:showHostInfo={showHostInfo}/>
     {:else}
-        <Login on:login={({username}) => loggedInUsername = username}/>
+        <Login on:login={ev => loggedInUsername = ev.detail.username}/>
     {/if}
 </main>
 
