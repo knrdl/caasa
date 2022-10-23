@@ -22,7 +22,7 @@
     const defaultUser = 'root'
     let user: string = defaultUser
 
-    const term = new XTerm({theme: {background: '#222'}})
+    const term = new XTerm({theme: {background: '#222', cursor: 'white', cursorAccent: '#222'}, cursorBlink: true})
     const fitAddon = new FitAddon()
 
     beforeUpdate(() => {
@@ -56,7 +56,6 @@
         term.onData(data => {
             api.send('transmit_terminal_input', {data})
         })
-        term.setOption('cursorBlink', true)
     })
 
     onDestroy(() => {
