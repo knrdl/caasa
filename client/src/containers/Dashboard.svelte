@@ -213,17 +213,25 @@
                     <div class="mb-1">
                         <span class="me-2">Memory</span>
                         <span class="badge rounded-pill bg-primary ms-2">Now {bytes2human(container.mem.used)}</span>
-                        <span class="badge rounded-pill bg-warning ms-2">Max {bytes2human(container.mem.max_used)}</span>
-                        <span class="badge rounded-pill bg-info ms-2">Limit {bytes2human(container.mem.total)} </span>
+                        {#if container.mem.max_used !== null}
+                            <span class="badge rounded-pill bg-warning ms-2">Max {bytes2human(container.mem.max_used)}</span>
+                        {/if}
+                        {#if container.mem.total !== null}
+                            <span class="badge rounded-pill bg-info ms-2">Limit {bytes2human(container.mem.total)} </span>
+                        {/if}
                     </div>
-                    <div class="progress">
-                        <div class="progress-bar text-white overflow-visible ps-1"
-                             style="width: {mem_perc}%; z-index: 2">
-                            {round(mem_perc)}%
+                    {#if container.mem.used !== null && container.mem.total !== null}
+                        <div class="progress">
+                            <div class="progress-bar text-white overflow-visible ps-1"
+                                 style="width: {mem_perc}%; z-index: 2">
+                                {round(mem_perc)}%
+                            </div>
+                            {#if container.mem.max_used !== null}
+                                <div class="progress-bar progress-bar-striped bg-warning"
+                                     style="width: {peak_mem_perc-mem_perc}%"></div>
+                            {/if}
                         </div>
-                        <div class="progress-bar progress-bar-striped bg-warning"
-                             style="width: {peak_mem_perc-mem_perc}%"></div>
-                    </div>
+                    {/if}
                 </div>
             </div>
         {/if}

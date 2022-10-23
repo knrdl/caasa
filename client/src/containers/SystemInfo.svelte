@@ -3,7 +3,7 @@
     import {onDestroy, onMount} from "svelte";
     import Fa from "svelte-fa";
     import {faBoxOpen, faMemory, faMicrochip, faServer} from "@fortawesome/free-solid-svg-icons";
-    import {faDocker} from "@fortawesome/free-brands-svg-icons";
+    import {faDocker, faGithub} from "@fortawesome/free-brands-svg-icons";
     import {messageBus} from "../messages/message-store";
     import {bytes2human} from "./utils";
 
@@ -53,6 +53,12 @@
                 <div class="d-flex align-items-center mb-2">
                     <Fa icon={faBoxOpen} size="lg" style="width: 3rem"/>
                     {info.containers.running}/{info.containers.total} Containers running
+                </div>
+                <div class="mt-3">
+                    <a href="https://github.com/knrdl/casa" target="_blank" rel="noopener noreferrer"
+                       class="text-decoration-none">
+                        <Fa icon={faGithub} size="sm"/>
+                        Casa on Github</a>
                 </div>
             </div>
         </div>

@@ -115,17 +115,26 @@ async def get_container_info(username: str, container_id: str):
 
             stats = stats[0]
 
-            cpu_delta = stats['cpu_stats']['cpu_usage']['total_usage'] - stats['precpu_stats']['cpu_usage'][
-                'total_usage']
-            system_cpu_delta = stats['cpu_stats']['system_cpu_usage'] - stats['precpu_stats']['system_cpu_usage']
-            cpu_perc = (cpu_delta / system_cpu_delta) * stats['cpu_stats']['online_cpus'] * 100.0
+            try:
+                cpu_delta = stats['cpu_stats']['cpu_usage']['total_usage'] - stats['precpu_stats']['cpu_usage'][
+                    'total_usage']
+                system_cpu_delta = stats['cpu_stats']['system_cpu_usage'] - stats['precpu_stats']['system_cpu_usage']
+                online_cpus = stats['cpu_stats']['online_cpus'] or len(stats['cpu_stats']['cpu_usage']['percpu_usage'])
+                cpu_perc = (cpu_delta / system_cpu_delta) * online_cpus * 100.0
+            except KeyError:
+                cpu_perc = None
 
-            mem_used = stats['memory_stats']['usage'] - stats['memory_stats']['stats']['cache']
-            mem_used_max = stats['memory_stats']['max_usage']
+            mem_used = stats['memory_stats']['usage'] - stats['memory_stats'].get('stats', {}).get('cache', 0)
+            mem_used_max = stats['memory_stats'].get('max_usage', None)
             mem_total = stats['memory_stats']['limit']
+
+            if mem_total == mem_used_max and mem_total > 1024 ** 5:
+                mem_total = mem_used_max = None
 
             rx_bytes = sum([v['rx_bytes'] for v in stats['networks'].values()])
             tx_bytes = sum([v['tx_bytes'] for v in stats['networks'].values()])
+        else:
+            cpu_perc = mem_used = mem_used_max = mem_total = rx_bytes = tx_bytes = None
         return {
             'id': container.id,
             'name': container['Name'],
@@ -142,7 +151,7 @@ async def get_container_info(username: str, container_id: str):
                 'hash': container['Image']
             },
             'mem': {'used': mem_used, 'max_used': mem_used_max, 'total': mem_total} if running else None,
-            'cpu': {'perc': cpu_perc} if running else None,
+            'cpu': {'perc': cpu_perc} if cpu_perc is not None else None,
             'net': {'rx_bytes': rx_bytes, 'tx_bytes': tx_bytes} if running else None,
             'ports': sorted(list(container['NetworkSettings']['Ports'].keys()), key=lambda p: int(p.split('/')[0]))
         }
@@ -153,10 +162,19 @@ async def get_container_info(username: str, container_id: str):
 async def get_processes(username: str, container_id: str):
     container: DockerContainer = await client.containers.get(container_id)
     if 'procs' in get_user_container_permissions(username, container):
-        data = await container.docker._query_json(
-            f"containers/{container_id}/top", method="GET",
-            params={'ps_args': 'ax -o pid,ppid,%cpu,%mem,user,stime,command'}
-        )
+        try:
+            data = await container.docker._query_json(
+                f"containers/{container_id}/top", method="GET",
+                params={'ps_args': 'ax -o pid,ppid,%cpu,%mem,user,stime,command'}
+            )
+        except:
+            data = await container.docker._query_json(
+                f"containers/{container_id}/top", method="GET",
+                params={'ps_args': 'ax -o pid,ppid,user,comm'}
+            )
+        if len(data['Titles']) == 1:
+            data['Titles'] = data['Titles'][0].split()
+            data['Processes'] = [p[0].split() for p in data['Processes']]
         titles = [t.lower() for t in data['Titles']]
         procs = []
         for proc in data['Processes']:

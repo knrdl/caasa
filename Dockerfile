@@ -14,6 +14,8 @@ RUN npm run build
 
 FROM python:3.10-slim
 
+ENV PYTHONUNBUFFERED=TRUE
+
 WORKDIR /app
 
 RUN apt-get update && \

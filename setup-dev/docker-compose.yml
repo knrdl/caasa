@@ -1,0 +1,52 @@
+version: '2.4'
+
+services:
+  casa:
+    build: ..
+    restart: always
+    environment:
+      ROLES_casa_admin_basic: info, state, logs, procs, files, files-read
+      ROLES_casa_admin_full: info, info-annotations, state, logs, term, procs, files, files-read, files-write
+      AUTH_API_URL: https://example.org
+      AUTH_API_FIELD_USERNAME: username
+      AUTH_API_FIELD_PASSWORD: password
+      WEBPROXY_AUTH_HEADER: Remote-User
+    #    ports:
+    #      - "8080:8080"
+    volumes:
+      #      - /var/run/docker.sock:/var/run/docker.sock  # DOCKER
+      - /run/user/1000/podman/podman.sock:/var/run/docker.sock  # PODMAN
+    networks:
+      - net
+    mem_limit: 150m
+    cpu_count: 1
+    labels:
+      traefik.http.routers.casa.rule: Host(`localhost`)
+      traefik.http.middlewares.webproxy-auth.headers.customrequestheaders.Remote-User: user1  # for web proxy auth
+      traefik.http.routers.casa.middlewares: 'webproxy-auth@docker'
+
+  proxy:
+    image: docker.io/traefik:v2.9
+    command: --providers.docker
+    ports:
+      - "127.0.0.1:8080:80"
+    networks:
+      - net
+    volumes:
+      #      - /var/run/docker.sock:/var/run/docker.sock  # DOCKER
+      - /run/user/1000/podman/podman.sock:/var/run/docker.sock  # PODMAN
+    labels:
+      casa.admin.basic: user1,user2
+
+  demo1:
+    image: docker.io/nginx:alpine
+    labels:
+      casa.admin.full: user1,user2
+
+  demo2:
+    image: docker.io/traefik/whoami
+    labels:
+      casa.admin.basic: user1,user2
+
+networks:
+  net:
