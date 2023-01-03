@@ -164,7 +164,9 @@
             <div class="flex-grow-1">
                 <div class="mb-1">
                     <span class="me-2">Image</span>
-                    <span class="text-muted font-monospace">{container.image.hash.substr(0, 12 + 7)}</span>
+                    {#if container.image?.hash !== container?.image?.name}
+                        <span class="text-muted font-monospace">{container.image.hash.substring(0, 12 + 7)}</span>
+                    {/if}
                 </div>
                 <div>
                     <h6>
