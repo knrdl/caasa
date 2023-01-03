@@ -53,7 +53,7 @@
            on:click|preventDefault={()=>showHostInfo=true}>
             <Fa icon={faHouseUser} color="#123" size="2x" style="width: 3rem;height: 3rem;"/>
             <span class="text-black ps-2 fs-2 fw-light">
-                    Container as a Service Admin
+                    Container as a Service admin
                 </span>
         </a>
         <div class="items-right">

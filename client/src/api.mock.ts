@@ -80,10 +80,10 @@ export class WebSocketMock implements WebSocket {
     }
 
     send(requestData: string) {
-        console.log('WS>', requestData)
+        // console.log('WS>', requestData)
         const body = JSON.parse(requestData)
         const res = mockResponse(body)
-        console.log('WS<', res)
+        // console.log('WS<', res)
         const msg: Event & { data: string | Blob } = {
             data: undefined,
             ...new Event('api-mock')
