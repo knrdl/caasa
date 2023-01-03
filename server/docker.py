@@ -79,7 +79,7 @@ async def get_user_containers(username: str):
 async def fetch_logs(username: str, container_id: str, since: int):
     container = await client.containers.get(container_id)
     if 'logs' in get_user_container_permissions(username, container):
-        loglines = ''
+        loglines = []
         async with container.docker._query(f"containers/{container_id}/logs",
                                            params={"stdout": True, "stderr": True, 'timestamps': True,
                                                    'since': since, 'tail': 5000}) as response:
@@ -90,9 +90,9 @@ async def fetch_logs(username: str, container_id: str, since: int):
                 msg_header = msg[:8]  # first 8 bytes are usually header
                 stdout, stderr = 0x01, 0x02
                 if msg_header[0] in (stdout, stderr):  # message has header
-                    loglines += msg[8:].decode('utf-8')
+                    loglines.append(msg[8:].decode('utf-8'))
                 else:  # some docker versions leave the header out
-                    loglines += msg.decode('utf-8')
+                    loglines.append(msg.decode('utf-8'))
         return loglines
     else:
         raise Exception('unauthorized to access container')
