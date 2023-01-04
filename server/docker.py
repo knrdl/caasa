@@ -40,8 +40,12 @@ def get_user_container_permissions(username: str, container: DockerContainer) ->
 async def get_system_info(username: str):
     if await get_user_containers(username):  # show only system info if user has access to at least one container
         data = await client.system.info()
+        if 'BuildahVersion' in data:
+            engine = 'Podman'
+        else:
+            engine = 'Docker'
         return {
-            "version": data['ServerVersion'],
+            "engine_version": engine + ' ' + data['ServerVersion'],
             "containers": {
                 'total': data['Containers'],
                 'running': data['ContainersRunning'],

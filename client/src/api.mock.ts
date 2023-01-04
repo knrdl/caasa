@@ -4,7 +4,7 @@ function mockResponse(body) {
         case 'login':
             return `{"response": "login", "payload": {"username": "${body.payload.username}"}}`
         case 'get_system_info':
-            return `{"response": "get_system_info", "payload": {"version": "20.10.7", "containers": {"total": 178, "running": 170, "stopped": 0}, "os": "Ubuntu 20.04.3 LTS", "cpus": 24, "mem": 31277850624}}`
+            return `{"response": "get_system_info", "payload": {"engine_version": "Docker 20.10.7", "containers": {"total": 178, "running": 170, "stopped": 0}, "os": "Ubuntu 20.04.3 LTS", "cpus": 24, "mem": 31277850624}}`
         case 'get_container_list':
             return `{"response": "get_container_list", "payload": [
                 {"id": "2b7eb6b9d2f7fd2dd26738500a81a16310f78e46eea2f9c2a27ed876d85d8586", "name": "CaaSa Demo", "namespace": null, "status": "running", "permissions": ["info", "info-annotations", "procs", "files-read", "files-write", "files", "logs", "state", "term"]},

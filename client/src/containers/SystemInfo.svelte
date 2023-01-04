@@ -48,7 +48,7 @@
                 </div>
                 <div class="d-flex align-items-center mb-2">
                     <Fa icon={faDocker} size="lg" style="width: 3rem"/>
-                    Docker {info.version}
+                    {info.engine_version}
                 </div>
                 <div class="d-flex align-items-center mb-2">
                     <Fa icon={faBoxOpen} size="lg" style="width: 3rem"/>

@@ -1,6 +1,15 @@
 type ContainerStatus = 'created' | 'restarting' | 'running' | 'removing' | 'paused' | 'exited' | 'dead'
 type Tab = 'info' | 'logs' | 'term' | 'procs' | 'files'
-type PermissionType = 'info' | 'info-annotations' | 'state' | 'logs' | 'term' | 'procs' | 'files' | 'files-read' | 'files-write'
+type PermissionType =
+    'info'
+    | 'info-annotations'
+    | 'state'
+    | 'logs'
+    | 'term'
+    | 'procs'
+    | 'files'
+    | 'files-read'
+    | 'files-write'
 
 class ContainerInfoShort {
     id: string
@@ -56,7 +65,7 @@ class DirectoryListing {
 }
 
 class SysInfo {
-    version: string
+    engine_version: string
     containers: {
         total: number
         running: number
