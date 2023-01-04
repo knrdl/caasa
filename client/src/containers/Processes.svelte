@@ -54,7 +54,7 @@
     }
 </script>
 
-<div>
+<div style="overflow-x:scroll">
     {#if loading}
         <div class="d-flex align-items-center">
             <strong>Loading...</strong>

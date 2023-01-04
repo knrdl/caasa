@@ -130,7 +130,7 @@
     }
 </script>
 
-<div>
+<div style="overflow-x:scroll">
     {#if loading}
         <div class="d-flex align-items-center">
             <strong>Loading...</strong>
@@ -213,20 +213,22 @@
                         {:else}
                             {e.type}
                         {/if}
+                        <wbr>
                         {e.name}
                     </td>
-                    <td class="text-end">
+                    <td class="text-end" style="word-break: break-all">
                         {#if e.type === 'f'}
                             {e.filesize}
                         {/if}
                     </td>
                     <td class="text-center">
-                        {e.owner}/{e.group}
+                        {e.owner}
+                        <wbr>{e.group}
                     </td>
                     <td class="text-center">
                         {e.modtime}
                     </td>
-                    <td class="text-center font-monospace">
+                    <td class="text-center font-monospace" style="word-break: break-all">
                         {e.permissions}
                     </td>
                 </tr>
