@@ -50,13 +50,15 @@
 
 <main>
     <header>
-        <a href="/#/" class="d-md-none d-flex justify-content-center align-items-center"
-           on:click|preventDefault={()=>showContainerListOverlay = !showContainerListOverlay}>
-            <Fa icon={faBars} color="#123" size="2x" style="width: 3rem;height: 3rem;"/>
-        </a>
+        {#if loggedInUsername}
+            <a href="/#/" class="d-md-none d-flex justify-content-center align-items-center"
+               on:click|preventDefault={()=>showContainerListOverlay = !showContainerListOverlay}>
+                <Fa icon={faBars} color="#123" size="2x" style="width: 3rem;height: 3rem;"/>
+            </a>
+        {/if}
         <a href="/#/" class="d-flex justify-content-center align-items-center"
            on:click|preventDefault={()=>showHostInfo=true}>
-            <span class="d-none d-md-block">
+            <span class:d-none={loggedInUsername} class:d-md-block={loggedInUsername}>
                 <Fa icon={faHouseUser} color="#123" size="2x" style="width: 3rem;height: 3rem;"/>
             </span>
             <span class="text-black ps-2 fs-2 fw-light">
@@ -98,6 +100,8 @@
     header .items-right {
         display: flex;
         align-items: center;
+        flex-wrap: wrap;
+        justify-content: end;
     }
 
     main {
