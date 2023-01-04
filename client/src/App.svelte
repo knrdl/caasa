@@ -7,11 +7,12 @@
     import {messageBus} from "./messages/message-store"
     import Index from "./containers/Index.svelte"
     import Fa from "svelte-fa"
-    import {faHouseUser, faSignOutAlt} from "@fortawesome/free-solid-svg-icons"
+    import {faHouseUser, faSignOutAlt, faBars} from "@fortawesome/free-solid-svg-icons"
 
     let loggedInUsername: string | null = null
     let userCanLogout: boolean = true
     let showHostInfo: boolean = true
+    let showContainerListOverlay: boolean = false
 
     onMount(async () => {
         api.register('ws-error', null, (err) => messageBus.add({text: err, type: 'error'}))
@@ -49,9 +50,15 @@
 
 <main>
     <header>
+        <a href="/#/" class="d-md-none d-flex justify-content-center align-items-center"
+           on:click|preventDefault={()=>showContainerListOverlay = !showContainerListOverlay}>
+            <Fa icon={faBars} color="#123" size="2x" style="width: 3rem;height: 3rem;"/>
+        </a>
         <a href="/#/" class="d-flex justify-content-center align-items-center"
            on:click|preventDefault={()=>showHostInfo=true}>
-            <Fa icon={faHouseUser} color="#123" size="2x" style="width: 3rem;height: 3rem;"/>
+            <span class="d-none d-md-block">
+                <Fa icon={faHouseUser} color="#123" size="2x" style="width: 3rem;height: 3rem;"/>
+            </span>
             <span class="text-black ps-2 fs-2 fw-light">
                     Container as a Service admin
                 </span>
@@ -66,7 +73,7 @@
         </div>
     </header>
     {#if loggedInUsername}
-        <Index bind:showHostInfo={showHostInfo}/>
+        <Index bind:showHostInfo={showHostInfo} bind:showContainerListOverlay={showContainerListOverlay}/>
     {:else}
         <Login on:login={ev => loggedInUsername = ev.detail.username}/>
     {/if}

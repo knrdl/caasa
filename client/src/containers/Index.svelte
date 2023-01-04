@@ -10,12 +10,14 @@
     import Terminal from "./Terminal.svelte"
     import SystemInfo from "./SystemInfo.svelte"
     import {messageBus} from "../messages/message-store"
+    import ContainerList from "./ContainerList.svelte"
 
     let intervalHandler
     let loading: boolean = true
     let containers: ContainerInfoShort[]
     let selectedContainer: ContainerInfoShort
     export let showHostInfo: boolean
+    export let showContainerListOverlay: boolean
     let tab: Tab = null
 
     onMount(() => {
@@ -38,6 +40,7 @@
     function selectContainer(container: ContainerInfoShort) {
         tab = null
         showHostInfo = false
+        showContainerListOverlay = false
         selectedContainer = null
         window.scrollTo({top: 0, behavior: 'smooth'})
         setTimeout(() => {
@@ -61,39 +64,31 @@
     }
 
     $: isSelectedContainerRunning = selectedContainer?.status === 'running'
+
 </script>
 
 {#if loading}
     <LoadingScreen/>
 {/if}
+<div class="d-md-none position-relative" style="z-index: 100;" class:d-none={!showContainerListOverlay}>
+    <div class="position-fixed top-0 bottom-0 start-0 end-0" style="background: rgba(0, 0, 0, .55);"
+         on:click={()=>showContainerListOverlay = false}></div>
+    {#if showContainerListOverlay}
+        <div class="position-absolute" transition:fly="{{ y: -50, duration: 200 }}">
+            <ContainerList on:select-container={e => selectContainer(e.detail)} {containers}
+                           selectedContainer={showHostInfo ? null : selectedContainer}/>
+        </div>
+    {/if}
+</div>
 <div class="d-flex pb-3 align-items-start">
-    <div class="d-flex flex-column me-5 container-list">
-        {#if containers}
-            {#if containers.length === 0}
-                <p class="mx-5">No containers found</p>
-            {:else}
-                {#each containers as container}
-                    <div class="d-flex border-top border-bottom" style="cursor: pointer"
-                         on:click={() => selectContainer(container)}
-                         class:bg-primary={selectedContainer && selectedContainer.id === container.id}>
-                        <div class:bg-success={container.status === 'running'}
-                             class:bg-danger={['exited', 'dead', 'removing'].includes(container.status)}
-                             class:bg-warning={['created', 'paused', 'restarting'].includes(container.status)}
-                             style="width: 10px; flex: none"></div>
-                        <div class="p-2 pe-4">
-                            <div class:text-muted={selectedContainer?.id !== container.id}
-                                 class="text-uppercase">{container.namespace || ''}</div>
-                            <div>{container.name}</div>
-                        </div>
-                    </div>
-                {/each}
-            {/if}
-        {/if}
-    </div>
+    <aside class="d-none d-md-block me-4">
+        <ContainerList on:select-container={e => selectContainer(e.detail)} {containers}
+                       selectedContainer={showHostInfo ? null : selectedContainer}/>
+    </aside>
     {#if showHostInfo}
         <SystemInfo/>
     {:else}
-        <div class="container" transition:fly="{{ x: 300, duration: 200 }}" style="overflow: hidden">
+        <div class="container-md" transition:fly="{{ x: 300, duration: 200 }}" style="overflow: hidden">
             <div class="card tabs">
                 <ul class="card-header">
                     {#if selectedContainer?.permissions?.includes('info')}
@@ -170,7 +165,5 @@
 </div>
 
 <style>
-    .container-list {
-        box-shadow: 5px 8px 17px 9px rgb(0 0 0 / 25%);
-    }
 </style>
+

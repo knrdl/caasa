@@ -101,7 +101,7 @@
                     <div class="flex-grow-1">
                         <div class="mb-1">
                             <span class="me-2">Container</span>
-                            <span class="text-muted font-monospace">#{container.id.substr(0, 12)}</span>
+                            <span class="text-muted font-monospace">#{container.id.substring(0, 12)}</span>
                         </div>
                         <div>
                             <h6>{container.name.replace(/^\//, '')}</h6>
@@ -325,47 +325,49 @@
                 <div class="icon-left ms-1 me-3">
                     <Fa icon={faTags} size="2x"/>
                 </div>
-                <div style="flex: 1; font-size: small">
-                    <table class="table table-striped border">
-                        <thead>
-                        <tr>
-                            <th scope="col" colspan="2" style="font-weight: normal">Environment Variables</th>
-                        </tr>
-                        </thead>
-                        <tbody>
-                        {#each Object.entries(container.env).sort(([key1,], [key2,]) => key1.localeCompare(key2)) as [key, value]}
+                <div class="flex-grow-1 d-lg-flex" style="font-size: small">
+                    <div>
+                        <table class="table table-striped border">
+                            <thead>
                             <tr>
-                                <td class="text-end border-end text-break">
-                                    {key}
-                                </td>
-                                <td class="text-break">
-                                    {value}
-                                </td>
+                                <th scope="col" colspan="2" style="font-weight: normal">Environment Variables</th>
                             </tr>
-                        {/each}
-                        </tbody>
-                    </table>
-                </div>
-                <div style="flex: 1; font-size: small">
-                    <table class="table table-striped border">
-                        <thead>
-                        <tr>
-                            <th scope="col" colspan="2" style="font-weight: normal">Labels</th>
-                        </tr>
-                        </thead>
-                        <tbody>
-                        {#each Object.entries(container.labels).sort(([key1,], [key2,]) => key1.localeCompare(key2)) as [key, value]}
+                            </thead>
+                            <tbody>
+                            {#each Object.entries(container.env).sort(([key1,], [key2,]) => key1.localeCompare(key2)) as [key, value]}
+                                <tr>
+                                    <td class="text-end border-end text-break">
+                                        {key}
+                                    </td>
+                                    <td class="text-break">
+                                        {value}
+                                    </td>
+                                </tr>
+                            {/each}
+                            </tbody>
+                        </table>
+                    </div>
+                    <div>
+                        <table class="table table-striped border">
+                            <thead>
                             <tr>
-                                <td class="text-end border-end text-break">
-                                    {key}
-                                </td>
-                                <td class="text-break">
-                                    {value}
-                                </td>
+                                <th scope="col" colspan="2" style="font-weight: normal">Labels</th>
                             </tr>
-                        {/each}
-                        </tbody>
-                    </table>
+                            </thead>
+                            <tbody>
+                            {#each Object.entries(container.labels).sort(([key1,], [key2,]) => key1.localeCompare(key2)) as [key, value]}
+                                <tr>
+                                    <td class="text-end border-end text-break">
+                                        {key}
+                                    </td>
+                                    <td class="text-break">
+                                        {value}
+                                    </td>
+                                </tr>
+                            {/each}
+                            </tbody>
+                        </table>
+                    </div>
                 </div>
             </div>
         {/if}
