@@ -135,11 +135,15 @@ async def get_container_info(username: str, container_id: str):
             tx_bytes = sum([v['tx_bytes'] for v in stats['networks'].values()])
         else:
             cpu_perc = mem_used = mem_used_max = mem_total = rx_bytes = tx_bytes = None
+        if len(container['Args']) > 0 and container['Path'] == container['Args'][0]:
+            cmd = ' '.join(container['Args'])
+        else:
+            cmd = ' '.join([container['Path'], *container['Args']])
         return {
             'id': container.id,
             'name': container['Name'],
             'status': container['State']['Status'],
-            'command': ' '.join([container['Path'], *container['Args']]).removeprefix('/bin/sh -c '),
+            'command': cmd.removeprefix('/bin/sh -c '),
             'created_at': container['Created'],
             'started_at': container['State']['StartedAt'],
             'finished_at': container['State']['FinishedAt'],
