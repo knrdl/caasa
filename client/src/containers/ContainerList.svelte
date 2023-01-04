@@ -12,7 +12,7 @@
 
     $: filteredContainers = containers?.filter(container =>
         container.name.toLowerCase().replace(/\s+/g, '').includes(search.replace(/\s+/g, '')) ||
-        container.namespace.toLowerCase().replace(/\s+/g, '').includes(search.replace(/\s+/g, '')))
+        container.namespace?.toLowerCase().replace(/\s+/g, '').includes(search.replace(/\s+/g, '')))
 </script>
 
 <aside class="d-flex flex-column pb-1">
