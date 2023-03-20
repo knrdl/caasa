@@ -18,10 +18,12 @@ ENV PYTHONUNBUFFERED=TRUE
 
 WORKDIR /app
 
+COPY server .
+
 RUN apt-get update && \
     apt-get install --yes build-essential && \
-    pip install --upgrade pip && \
-    pip install --upgrade --no-cache-dir starlette uvicorn[standard] aiohttp aiodocker && \
+    pip install --no-cache-dir --upgrade pip && \
+    pip install --no-cache-dir -r requirements.txt && \
     apt-get purge --yes build-essential && \
     apt-get autoremove --yes && \
     apt-get clean --yes && \
@@ -33,4 +35,4 @@ EXPOSE 8080/tcp
 CMD uvicorn main:app --host 0.0.0.0 --port 8080 --log-level info
 
 COPY --from=client_builder /app/public /www
-COPY server .
+
