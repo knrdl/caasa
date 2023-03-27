@@ -11,7 +11,7 @@
   },
   "devDependencies": {
     "@fortawesome/free-brands-svg-icons": "^5.15.4",
-    "@fortawesome/free-solid-svg-icons": "^5.15.4",
+    "@fortawesome/free-solid-svg-icons": "^6.3.0",
     "@rollup/plugin-commonjs": "^21.0.1",
     "@rollup/plugin-node-resolve": "^13.0.0",
     "@rollup/plugin-typescript": "^8.0.0",
