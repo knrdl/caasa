@@ -118,7 +118,7 @@ async def spawn_terminal(state: State, container_id: str, cmd: str, user: str):
     process, stream = await docker.spawn_terminal(state.username, container_id, cmd, user)
     try:
         await close_terminal(state)
-    except:
+    except BaseException:
         traceback.print_exc()
     state.term = process, stream
     asyncio.create_task(_listen_for_terminal_output(state))
