@@ -128,11 +128,13 @@ async def get_container_info(username: str, container_id: str):
             except KeyError:
                 cpu_perc = None
 
-            mem_used = stats['memory_stats']['usage'] - stats['memory_stats'].get('stats', {}).get('cache', 0)
+            mem_used = mem_used_max = mem_total = None
+            if 'usage' in stats['memory_stats']:
+                mem_used = stats['memory_stats']['usage'] - stats['memory_stats'].get('stats', {}).get('cache', 0)
             mem_used_max = stats['memory_stats'].get('max_usage', None)
-            mem_total = stats['memory_stats']['limit']
+            mem_total = stats['memory_stats'].get('limit', None)
 
-            if mem_total == mem_used_max and mem_total > 1024 ** 5:
+            if mem_total is not None and mem_total == mem_used_max and mem_total > 1024 ** 5:
                 mem_total = mem_used_max = None
 
             rx_bytes = sum([v['rx_bytes'] for v in stats['networks'].values()])

@@ -214,7 +214,9 @@
                 <div class="flex-grow-1">
                     <div class="mb-1">
                         <span class="me-2">Memory</span>
-                        <span class="badge rounded-pill bg-primary ms-2">Now {bytes2human(container.mem.used)}</span>
+                        {#if container.mem.used !== null}
+                            <span class="badge rounded-pill bg-primary ms-2">Now {bytes2human(container.mem.used)}</span>
+                        {/if}
                         {#if container.mem.max_used !== null}
                             <span class="badge rounded-pill bg-warning ms-2">Max {bytes2human(container.mem.max_used)}</span>
                         {/if}
