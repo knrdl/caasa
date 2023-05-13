@@ -4,13 +4,12 @@ import os.path
 import re
 import tarfile
 import traceback
-from typing import Literal, Set, List, Dict
+from typing import Dict, List, Literal, Set
 
 import aiodocker
+import config
 from aiodocker.containers import DockerContainer
 from aiodocker.stream import Stream
-
-import config
 
 client = aiodocker.Docker()
 
@@ -32,21 +31,22 @@ def get_user_container_permissions(username: str, container: DockerContainer) ->
         for role in config.ROLES_PERMS:
             if any((name.strip().lower() == username for name in labels.get(role, '').split(','))):  # if user has role
                 perms.update(config.ROLES_PERMS[role])
-    except Exception as e:
+    except Exception:
         traceback.print_exc()
     return perms
 
 
 async def get_system_info(username: str):
-    if await get_user_containers(username):  # show only system info if user has access to at least one container
+    # show only system info if user has access to at least one container
+    if await get_user_containers(username):
         data = await client.system.info()
         if 'BuildahVersion' in data:
             engine = 'Podman'
         else:
             engine = 'Docker'
         return {
-            "engine_version": engine + ' ' + data['ServerVersion'],
-            "containers": {
+            'engine_version': engine + ' ' + data['ServerVersion'],
+            'containers': {
                 'total': data['Containers'],
                 'running': data['ContainersRunning'],
                 'stopped': data['ContainersStopped']
@@ -84,8 +84,8 @@ async def fetch_logs(username: str, container_id: str, since: int):
     container = await client.containers.get(container_id)
     if 'logs' in get_user_container_permissions(username, container):
         loglines = []
-        async with container.docker._query(f"containers/{container_id}/logs",
-                                           params={"stdout": True, "stderr": True, 'timestamps': True,
+        async with container.docker._query(f'containers/{container_id}/logs',
+                                           params={'stdout': True, 'stderr': True, 'timestamps': True,
                                                    'since': since, 'tail': 5000}) as response:
             while True:
                 msg = await response.content.readline()
@@ -155,13 +155,13 @@ async def get_container_info(username: str, container_id: str):
             'env': env_vars,
             'labels': _get_labels(container) if 'info-annotations' in permissions else None,
             'image': {
-                'name': container["Config"]['Image'],
+                'name': container['Config']['Image'],
                 'hash': container['Image']
             },
             'mem': {'used': mem_used, 'max_used': mem_used_max, 'total': mem_total} if running else None,
             'cpu': {'perc': cpu_perc} if cpu_perc is not None else None,
             'net': {'rx_bytes': rx_bytes, 'tx_bytes': tx_bytes} if running else None,
-            'ports': sorted(list(container['NetworkSettings']['Ports'].keys()), key=lambda p: int(p.split('/')[0]))
+            'ports': sorted(container['NetworkSettings']['Ports'].keys(), key=lambda p: int(p.split('/')[0]))
         }
     else:
         raise Exception('unauthorized to access container')
@@ -172,12 +172,12 @@ async def get_processes(username: str, container_id: str):
     if 'procs' in get_user_container_permissions(username, container):
         try:
             data = await container.docker._query_json(
-                f"containers/{container_id}/top", method="GET",
+                f'containers/{container_id}/top', method='GET',
                 params={'ps_args': 'ax -o pid,ppid,%cpu,%mem,user,stime,command'}
             )
         except BaseException:
             data = await container.docker._query_json(
-                f"containers/{container_id}/top", method="GET",
+                f'containers/{container_id}/top', method='GET',
                 params={'ps_args': 'ax -o pid,ppid,user,comm'}
             )
         if len(data['Titles']) == 1:

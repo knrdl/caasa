@@ -1,5 +1,7 @@
 import os
-from typing import Literal, get_args, Final, Set, Dict
+from typing import Dict, Final, Literal, Set, get_args
+
+from logger import logger
 
 AUTH_API_URL = os.getenv('AUTH_API_URL')
 AUTH_API_FIELD_USERNAME = os.getenv('AUTH_API_FIELD_USERNAME', 'username')
@@ -27,7 +29,7 @@ for key, value in os.environ.items():
 if not ROLES_PERMS:
     raise Exception('no roles defined, please set ROLES_* env vars')
 
-print('Roles:')
+logger.info('Roles:')
 for role in sorted(ROLES_PERMS):
-    print('*', role, '->', ', '.join(sorted(ROLES_PERMS[role])))
-print()
+    logger.info('*', role, '->', ', '.join(sorted(ROLES_PERMS[role])))
+logger.info()

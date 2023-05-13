@@ -18,10 +18,10 @@ jobs:
       - name: Install dependencies
         run: |
           python -m pip install --upgrade pip
-          pip install pycodestyle
-
+          pip install flake8 flake8-bandit flake8-bugbear flake8-builtins flake8-comprehensions flake8-deprecated flake8-isort flake8-print flake8-quotes flake8-todo
+          
       - name: Check linting
         run: |
-          # ignore E501 = line too long
-          python -m pycodestyle --ignore=E501 .
+          echo -e "[settings]\nline_length=179" > .isort.cfg
+          python -m flake8 --max-line-length 179 .
 

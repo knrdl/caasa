@@ -1,9 +1,8 @@
 from typing import Optional
 
 import aiohttp
+from config import AUTH_API_FIELD_PASSWORD, AUTH_API_FIELD_USERNAME, AUTH_API_URL, WEBPROXY_AUTH_HEADER
 from starlette.datastructures import State
-
-from config import AUTH_API_URL, AUTH_API_FIELD_USERNAME, AUTH_API_FIELD_PASSWORD, WEBPROXY_AUTH_HEADER
 
 
 async def auth_api_login(username: str, password: str) -> None:

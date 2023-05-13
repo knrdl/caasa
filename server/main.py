@@ -4,17 +4,16 @@ import time
 import traceback
 from typing import Literal
 
+import auth
+import docker
+import ws
 from aiodocker.execs import Exec
-from aiodocker.stream import Stream, Message
+from aiodocker.stream import Message
 from starlette.applications import Starlette
 from starlette.datastructures import State
 from starlette.routing import Mount, WebSocketRoute
 from starlette.staticfiles import StaticFiles
 from starlette.websockets import WebSocketState
-
-import auth
-import docker
-import ws
 
 
 @ws.on_connect()
@@ -154,6 +153,6 @@ async def resize_terminal(state: State, rows: int, cols: int):
 
 
 app = Starlette(debug=False, routes=[
-    WebSocketRoute("/ws", ws.WebSocketHandler),
+    WebSocketRoute('/ws', ws.WebSocketHandler),
     Mount('/', app=StaticFiles(directory='/www', html=True)),
 ])

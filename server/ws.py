@@ -1,12 +1,13 @@
 import json
 import sys
 import traceback
-from typing import Callable, Any, Awaitable
+from typing import Any, Awaitable, Callable
+from urllib.parse import urlparse
 
+from logger import logger
 from starlette.datastructures import State
 from starlette.endpoints import WebSocketEndpoint
 from starlette.websockets import WebSocket
-from urllib.parse import urlparse
 
 AsyncFuncType = FuncType = Callable[[Any], Awaitable[Any]]
 
@@ -60,13 +61,13 @@ class WebSocketHandler(WebSocketEndpoint):
         host = websocket.url
         if origin.netloc and host.netloc and origin.netloc == host.netloc:
             if origin.scheme != 'https':
-                print('Insecure HTTP request detected. Please serve the application via HTTPS.', file=sys.stderr)
+                logger.warning('Insecure HTTP request detected. Please serve the application via HTTPS.', file=sys.stderr)
             await websocket.accept()
             await self.after_connect(websocket)
         else:
-            print('Cross-Site WebSocket Hijacking detected. '
-                  'If the application is served behind a reverse-proxy, you maybe forgot to pass the host header.',
-                  file=sys.stderr)
+            logger.warning('Cross-Site WebSocket Hijacking detected. '
+                           'If the application is served behind a reverse-proxy, you maybe forgot to pass the host header.',
+                           file=sys.stderr)
             await websocket.close()
 
     async def after_connect(self, websocket: WebSocket):
