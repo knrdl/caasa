@@ -61,13 +61,12 @@ class WebSocketHandler(WebSocketEndpoint):
         host = websocket.url
         if origin.netloc and host.netloc and origin.netloc == host.netloc:
             if origin.scheme != 'https':
-                logger.warning('Insecure HTTP request detected. Please serve the application via HTTPS.', file=sys.stderr)
+                logger.warning('Insecure HTTP request detected. Please serve the application via HTTPS.')
             await websocket.accept()
             await self.after_connect(websocket)
         else:
             logger.warning('Cross-Site WebSocket Hijacking detected. '
-                           'If the application is served behind a reverse-proxy, you maybe forgot to pass the host header.',
-                           file=sys.stderr)
+                           'If the application is served behind a reverse-proxy, you maybe forgot to pass the host header.')
             await websocket.close()
 
     async def after_connect(self, websocket: WebSocket):

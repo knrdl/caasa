@@ -29,7 +29,7 @@ for key, value in os.environ.items():
 if not ROLES_PERMS:
     raise Exception('no roles defined, please set ROLES_* env vars')
 
-logger.info('Roles:')
+logger.info('Roles -> Permissions:')
 for role in sorted(ROLES_PERMS):
-    logger.info('*', role, '->', ', '.join(sorted(ROLES_PERMS[role])))
-logger.info()
+    logger.info('* ' + role + ' -> ' + ', '.join(sorted(ROLES_PERMS[role])))
+logger.info('')
