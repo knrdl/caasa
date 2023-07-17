@@ -123,7 +123,7 @@ export default {
      * @param payload any json serializable object
      */
     send(request: ApiRequest, payload?: any) {
-        ws.send(JSON.stringify({request, payload}))
+        ws.send(JSON.stringify({ request, payload }))
     },
 
     close() {

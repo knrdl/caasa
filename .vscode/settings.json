@@ -1,5 +1,11 @@
 {
     "python.formatting.autopep8Args": [
         "--max-line-length=179"
-    ]
+    ],
+    "svelte.plugin.svelte.format.config.printWidth": 180,
+    "javascript.format.semicolons": "remove",
+    "typescript.format.semicolons": "remove",
+    "svelte.enable-ts-plugin": true,
+    "svelte.plugin.svelte.format.config.svelteStrictMode": true,
+    "prettier.semi": false
 }

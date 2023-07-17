@@ -1,9 +1,9 @@
-import {get, writable} from 'svelte/store';
+import { get, writable } from 'svelte/store'
 
 const MSG_LIFETIME = 10 //secs
 
 export const newQueueStore = function () {
-    let store = writable<Message[]>([]);
+    let store = writable<Message[]>([])
 
     setInterval(() => {
         let q = get(store)
@@ -16,7 +16,7 @@ export const newQueueStore = function () {
     return {
         add(msg: Message) {
             let q = get(store)
-            q.push({...msg, created_at: Math.floor(new Date().getTime() / 1000)})
+            q.push({ ...msg, created_at: Math.floor(new Date().getTime() / 1000) })
             store.set(q)
         },
         remove(msg: Message) {
