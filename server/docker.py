@@ -56,7 +56,7 @@ async def get_system_info(username: str):
             'mem': data['MemTotal']
         }
     else:
-        raise Exception('no containers accessible')
+        raise Exception('Found no containers assigned to you.')
 
 
 async def get_user_containers(username: str):
