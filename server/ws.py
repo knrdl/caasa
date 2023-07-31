@@ -73,7 +73,7 @@ class WebSocketHandler(WebSocketEndpoint):
         for handler in _ws_on_connect_handler:
             try:
                 result = await handler(websocket.state)
-                if type(result) == tuple and len(result) == 2:
+                if isinstance(result, tuple) and len(result) == 2:
                     action, response = result
                     await send_json(websocket, action, response)
                 elif result is not None:
@@ -89,8 +89,8 @@ class WebSocketHandler(WebSocketEndpoint):
             try:
                 response = await _ws_actions[action](websocket.state, **payload)
                 if response is not None:
-                    if type(response) == tuple and len(response) == 2 and type(response[0]) == dict and type(
-                            response[1]) == bytes:
+                    if isinstance(response, tuple) and len(response) == 2 and \
+                            isinstance(response[0], dict) and isinstance(response[1], bytes):
                         payload, binary = response
                         await send_json_bytes(websocket, action, payload, binary)
                     else:
