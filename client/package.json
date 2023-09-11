@@ -23,6 +23,6 @@
     "typescript": "^5.2.2",
     "vite": "^4.4.9",
     "xterm": "^5.2.1",
-    "xterm-addon-fit": "^0.7.0"
+    "xterm-addon-fit": "^0.8.0"
   }
 }
