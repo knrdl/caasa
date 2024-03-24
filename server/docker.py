@@ -177,7 +177,7 @@ async def get_processes(username: str, container_id: str):
                 f'containers/{container_id}/top', method='GET',
                 params={'ps_args': 'ax -o pid,ppid,%cpu,%mem,user,stime,command'}
             )
-        except BaseException:
+        except Exception:
             data = await container.docker._query_json(
                 f'containers/{container_id}/top', method='GET',
                 params={'ps_args': 'ax -o pid,ppid,user,comm'}
