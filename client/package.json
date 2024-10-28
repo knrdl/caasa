@@ -21,7 +21,7 @@
     "svelte-fa": "^4.0.3",
     "tslib": "^2.8.0",
     "typescript": "^5.6.3",
-    "vite": "^4.5.3",
+    "vite": "^5.4.10",
     "xterm": "^5.3.0",
     "xterm-addon-fit": "^0.8.0"
   }
