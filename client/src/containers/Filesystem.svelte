@@ -17,8 +17,8 @@
   let loading: boolean = true
   let oldContainerId: string
   let currentDir: string = '/'
-  let currentEntries: DirectoryListing[] = null
-  let info: FilesystemInfo = null
+  let currentEntries: DirectoryListing[] | null = null
+  let info: FilesystemInfo | null = null
 
   beforeUpdate(() => {
     if (container_id !== oldContainerId) {
@@ -38,7 +38,7 @@
         loadPath(response.workdir)
         info = response
       },
-      (err) => messageBus.add({ text: err, type: 'error' })
+      (err) => messageBus.add({ text: err, type: 'error' }),
     )
     api.register<{ path: string; entries: DirectoryListing[] }>(
       'get_directory_list',
@@ -52,28 +52,28 @@
         messageBus.add({ text: err, type: 'error' })
         currentEntries = null
         loading = false
-      }
+      },
     )
     api.register<{ payload: { path: string }; blob: Blob }>(
       'download_file',
       (response) => {
-        downloadBlob(response.blob, response.payload.path.split('/').pop())
+        downloadBlob(response.blob, response.payload.path.split('/').pop()!)
       },
-      (err) => messageBus.add({ text: err, type: 'error' })
+      (err) => messageBus.add({ text: err, type: 'error' }),
     )
     api.register<void>(
       'create_folder',
       () => {
         loadPath(currentDir)
       },
-      (err) => messageBus.add({ text: err, type: 'error' })
+      (err) => messageBus.add({ text: err, type: 'error' }),
     )
     api.register<void>(
       'upload_file',
       () => {
         loadPath(currentDir)
       },
-      (err) => messageBus.add({ text: err, type: 'error' })
+      (err) => messageBus.add({ text: err, type: 'error' }),
     )
   })
 
@@ -104,14 +104,14 @@
   }
 
   function addFolder() {
-    const folderName: string = prompt('Folder name:')
+    const folderName: string | null = prompt('Folder name:')
     if (folderName) {
       api.send('create_folder', { container_id, path: `${currentDir}/${folderName}` })
     }
   }
 
   async function uploadFile() {
-    const toBase64 = (file) =>
+    const toBase64 = (file: File) =>
       new Promise((resolve, reject) => {
         const reader = new FileReader()
         reader.readAsDataURL(file)
@@ -119,8 +119,8 @@
         reader.onerror = (error) => reject(error)
       })
 
-    const file = fileUploadElem.files[0]
-    if (confirm(`Upload file "${file.name}"?`)) {
+    const file = fileUploadElem.files?.[0]
+    if (file && confirm(`Upload file "${file.name}"?`)) {
       api.send('upload_file', { container_id, path: `${currentDir}/${file.name}`, content: await toBase64(file) })
     }
   }
@@ -150,17 +150,19 @@
     <div class="d-flex justify-content-between align-items-center">
       <div class="d-flex">
         <div class="btn-group me-1">
-          <button type="button" class="btn btn-outline-primary" on:click="{() => loadPath(info.workdir)}">
-            <Fa icon="{faHome}" />
-          </button>
-          <button type="button" class="btn btn-outline-primary" on:click="{() => loadPath(currentDir)}">
-            <Fa icon="{faSync}" />
+          {#if info}
+            <button type="button" class="btn btn-outline-primary" on:click={() => loadPath(info!.workdir)}>
+              <Fa icon={faHome} />
+            </button>
+          {/if}
+          <button type="button" class="btn btn-outline-primary" on:click={() => loadPath(currentDir)}>
+            <Fa icon={faSync} />
           </button>
         </div>
 
         <div class="btn-group mx-2" role="group">
           {#each parseCurrentDir() as itm}
-            <button type="button" class="btn btn-secondary border-dark" on:click="{() => loadPath(itm.totalPath)}">{itm.segment || '/'}</button>
+            <button type="button" class="btn btn-secondary border-dark" on:click={() => loadPath(itm.totalPath)}>{itm.segment || '/'}</button>
           {/each}
         </div>
       </div>
@@ -168,19 +170,19 @@
       <div class="d-flex">
         {#if allow_upload}
           <Dropdown btnClass="outline-primary">
-            <span slot="button" class="me-1"><Fa icon="{faPlus}" /> Add</span>
-            <DropdownItem on:click="{addFolder}">Add Folder</DropdownItem>
-            <DropdownItem on:click="{() => fileUploadElem.click()}">Upload File</DropdownItem>
+            <span slot="button" class="me-1"><Fa icon={faPlus} /> Add</span>
+            <DropdownItem on:click={addFolder}>Add Folder</DropdownItem>
+            <DropdownItem on:click={() => fileUploadElem.click()}>Upload File</DropdownItem>
           </Dropdown>
-          <input type="file" style="display: none" bind:this="{fileUploadElem}" on:change="{uploadFile}" />
+          <input type="file" style="display: none" bind:this={fileUploadElem} on:change={uploadFile} />
         {/if}
 
-        {#if info?.mounts?.length > 0}
+        {#if info && info.mounts?.length > 0}
           <div class="ms-4">
             <Dropdown>
-              <span slot="button" class="me-1"><Fa icon="{faHdd}" /> Volumes </span>
+              <span slot="button" class="me-1"><Fa icon={faHdd} /> Volumes </span>
               {#each info.mounts as mount}
-                <DropdownItem on:click="{() => loadPath(mount.destination)}">
+                <DropdownItem on:click={() => loadPath(mount.destination)}>
                   <div class="d-flex justify-content-between align-items-center">
                     <span>{mount.destination}</span>
                     <span>
@@ -210,14 +212,14 @@
       </thead>
       <tbody>
         {#each currentEntries || [] as e}
-          <tr class:clickable="{e.type === 'd' || allow_download}" on:click="{() => (e.type === 'd' ? gotoSubDir(e.name) : requestFileDownload(e.name))}">
+          <tr class:clickable={e.type === 'd' || allow_download} on:click={() => (e.type === 'd' ? gotoSubDir(e.name) : requestFileDownload(e.name))}>
             <td>
               {#if e.type === 'd'}
-                <Fa icon="{faFolder}" size="lg" color="#3B6" />
+                <Fa icon={faFolder} size="lg" color="#3B6" />
               {:else if e.type === 'f'}
-                <Fa icon="{faFile}" size="lg" color="#36B" />
+                <Fa icon={faFile} size="lg" color="#36B" />
               {:else if e.type === 'l'}
-                <Fa icon="{faExternalLinkSquareAlt}" size="lg" color="#B36" />
+                <Fa icon={faExternalLinkSquareAlt} size="lg" color="#B36" />
               {:else}
                 {e.type}
               {/if}

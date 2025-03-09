@@ -99,7 +99,7 @@ export default {
      * @param success Callback function
      * @param failure Callback function
      */
-    register<T = void>(event: ApiResponse, success?: (data: T) => void, failure?: (err: string) => void) {
+    register<T = void>(event: ApiResponse, success: ((data: T) => void) | null = null, failure: ((err: string) => void) | null = null) {
         if (success)
             callbacksSuccess[event] = success
         if (failure)

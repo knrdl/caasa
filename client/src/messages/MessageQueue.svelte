@@ -23,7 +23,7 @@
                 <div class="toast-body">
                     {msg.text}
                 </div>
-                <button type="button" class="btn-close btn-close-white me-2 m-auto"
+                <button type="button" class="btn-close btn-close-white me-2 m-auto" aria-label="remove message"
                         on:click={() => messageBus.remove(msg)}></button>
             </div>
         </div>

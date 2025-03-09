@@ -40,10 +40,10 @@ html.dark .tabs .card-header li button.active {
     padding: 2rem 1rem;
 }
 
-.tabs .card-body > .row {
+.tabs .card-body>.row {
     margin-top: .5em;
 }
 
-.tabs .card-body > .row .col button {
+.tabs .card-body>.row .col button {
     padding: .25em;
 }

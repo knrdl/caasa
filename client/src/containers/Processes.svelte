@@ -9,9 +9,9 @@
   let oldContainerId: string
   let logElem: HTMLPreElement
 
-  let intervalHandler
+  let intervalHandler: number | undefined
   let loading: boolean = true
-  let procs: Proc[] = null
+  let procs: Proc[] | null = null
 
   beforeUpdate(() => {
     if (container_id !== oldContainerId) {
@@ -29,7 +29,7 @@
         procs = data
         loading = false
       },
-      (err) => messageBus.add({ text: err, type: 'error' })
+      (err) => messageBus.add({ text: err, type: 'error' }),
     )
 
     intervalHandler = setInterval(() => {
@@ -41,12 +41,6 @@
     clearInterval(intervalHandler)
     api.unregister('get_processes')
   })
-
-  function fullscreen() {
-    if (logElem.requestFullscreen) {
-      logElem.requestFullscreen({ navigationUI: 'show' })
-    }
-  }
 
   function valueOrDefault(value: any, fallback: any) {
     if (value !== null && value !== undefined) {
@@ -102,7 +96,7 @@
                 {#each Array(proc.level) as _, i}
                   <div style="width: 2rem" class="me-2 d-flex justify-content-end align-items-center">
                     {#if parseInt(proc.level) === i + 1}
-                      <Fa icon="{faLevelUpAlt}" rotate="{90}" />
+                      <Fa icon={faLevelUpAlt} rotate={90} />
                     {/if}
                   </div>
                 {/each}

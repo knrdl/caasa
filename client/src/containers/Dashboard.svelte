@@ -10,7 +10,7 @@
   export let container_id: string
   let oldContainerId: string
 
-  let intervalHandler
+  let intervalHandler: number | undefined
   let loading: boolean = true
   let runningAction: null | 'start' | 'stop' | 'restart' = null
 
@@ -39,7 +39,7 @@
           loading = false
         }
       },
-      (err) => messageBus.add({ text: err, type: 'error' })
+      (err) => messageBus.add({ text: err, type: 'error' }),
     )
 
     api.register<void>(
@@ -47,7 +47,7 @@
       () => {
         runningAction = null
       },
-      (err) => messageBus.add({ text: err, type: 'error' })
+      (err) => messageBus.add({ text: err, type: 'error' }),
     )
 
     intervalHandler = setInterval(() => {
@@ -87,7 +87,7 @@
   {:else}
     <div class="d-flex mb-3">
       <div class="icon-left ms-1 me-3">
-        <Fa icon="{faBoxOpen}" size="2x" />
+        <Fa icon={faBoxOpen} size="2x" />
       </div>
       <div class="d-flex flex-column flex-grow-1">
         <div class="flex-grow-1 d-flex align-items-center justify-content-between">
@@ -104,9 +104,9 @@
             <div class="ms-4">
               {#if container.status === 'running'}
                 {#if !runningAction || runningAction === 'restart'}
-                  <button type="button" class="btn btn-outline-warning" disabled="{!!runningAction}" on:click="{() => sendAction('restart')}">
+                  <button type="button" class="btn btn-outline-warning" disabled={!!runningAction} on:click={() => sendAction('restart')}>
                     {#if !runningAction}
-                      <Fa icon="{faSync}" />
+                      <Fa icon={faSync} />
                     {:else}
                       <span class="spinner-grow spinner-grow-sm" role="status" aria-hidden="true"></span>
                     {/if}
@@ -114,9 +114,9 @@
                   </button>
                 {/if}
                 {#if !runningAction || runningAction === 'stop'}
-                  <button type="button" class="btn btn-outline-danger" disabled="{!!runningAction}" on:click="{() => sendAction('stop')}">
+                  <button type="button" class="btn btn-outline-danger" disabled={!!runningAction} on:click={() => sendAction('stop')}>
                     {#if !runningAction}
-                      <Fa icon="{faStop}" />
+                      <Fa icon={faStop} />
                     {:else}
                       <span class="spinner-grow spinner-grow-sm" role="status" aria-hidden="true"></span>
                     {/if}
@@ -124,9 +124,9 @@
                   </button>
                 {/if}
               {:else if !runningAction || runningAction === 'start'}
-                <button type="button" class="btn btn-outline-success" disabled="{!!runningAction}" on:click="{() => sendAction('start')}">
+                <button type="button" class="btn btn-outline-success" disabled={!!runningAction} on:click={() => sendAction('start')}>
                   {#if !runningAction}
-                    <Fa icon="{faPlay}" />
+                    <Fa icon={faPlay} />
                   {:else}
                     <span class="spinner-grow spinner-grow-sm" role="status" aria-hidden="true"></span>
                   {/if}
@@ -137,7 +137,7 @@
           {/if}
         </div>
         <div>
-          <Fa icon="{faTerminal}" />
+          <Fa icon={faTerminal} />
           <code>{container.command}</code>
         </div>
       </div>
@@ -145,7 +145,7 @@
 
     <div class="d-flex mb-3">
       <div class="icon-left ms-1 me-3">
-        <Fa icon="{faBox}" size="2x" />
+        <Fa icon={faBox} size="2x" />
       </div>
       <div class="flex-grow-1">
         <div class="mb-1">
@@ -164,7 +164,7 @@
               {image_name}
             {/if}
             <span class="ms-1">
-              <Fa icon="{faTag}" />
+              <Fa icon={faTag} />
               {image_tag}
             </span>
           </h6>
@@ -175,7 +175,7 @@
     {#if container.cpu}
       <div class="d-flex mb-3">
         <div class="icon-left ms-1 me-3">
-          <Fa icon="{faMicrochip}" size="2x" />
+          <Fa icon={faMicrochip} size="2x" />
         </div>
         <div class="flex-grow-1">
           <div class="mb-1">Processor</div>
@@ -191,7 +191,7 @@
     {#if container.mem}
       <div class="d-flex mb-3">
         <div class="icon-left ms-1 me-3">
-          <Fa icon="{faMemory}" size="2x" />
+          <Fa icon={faMemory} size="2x" />
         </div>
         <div class="flex-grow-1">
           <div class="mb-1">
@@ -223,7 +223,7 @@
     {#if container.net}
       <div class="d-flex mb-3">
         <div class="icon-left ms-1 me-3">
-          <Fa icon="{faNetworkWired}" size="2x" />
+          <Fa icon={faNetworkWired} size="2x" />
         </div>
         <div class="me-5">
           <div class="mb-1">Network</div>
@@ -243,7 +243,7 @@
 
     <div class="d-flex mb-3">
       <div class="icon-left ms-1 me-3">
-        <Fa icon="{faClock}" size="2x" />
+        <Fa icon={faClock} size="2x" />
       </div>
       <div class="flex-grow-1 pb-5 mb-5">
         <div class="mb-1">Timeline</div>
@@ -299,7 +299,7 @@
     {#if container.env || container.labels}
       <div class="d-flex mb-3">
         <div class="icon-left ms-1 me-3">
-          <Fa icon="{faTags}" size="2x" />
+          <Fa icon={faTags} size="2x" />
         </div>
         <div class="flex-grow-1 d-lg-flex" style="font-size: small">
           <div>

@@ -1,3 +1,4 @@
+// @ts-nocheck
 
 function mockResponse(body) {
     switch (body.request) {

@@ -11,7 +11,7 @@
   let oldContainerId: string
   let logElem: HTMLPreElement
 
-  let intervalHandler
+  let intervalHandler: number | undefined
   let loading: boolean = true
   let logs: string[] = []
 
@@ -41,7 +41,7 @@
           if (scrollToBottom) tick().then(() => (logElem.scrollTop = logElem.scrollHeight))
         }
       },
-      (err) => messageBus.add({ text: err, type: 'error' })
+      (err) => messageBus.add({ text: err, type: 'error' }),
     )
 
     intervalHandler = setInterval(() => {
@@ -88,31 +88,31 @@
   {:else}
     <div class="d-flex justify-content-between align-items-center mb-2">
       <div>
-        <select class="form-select" bind:value="{timestampMode}">
+        <select class="form-select" bind:value={timestampMode}>
           <option value="off">hide timestamps</option>
           <option value="local">local timestamps</option>
           <option value="raw">raw timestamps</option>
         </select>
       </div>
       <div>
-        <button type="button" class="btn mx-1" title="Scroll to Top" on:click="{() => (logElem.scrollTop = 0)}">
-          <Fa icon="{faChevronCircleUp}" size="lg" color="#666" />
+        <button type="button" class="btn mx-1" title="Scroll to Top" on:click={() => (logElem.scrollTop = 0)}>
+          <Fa icon={faChevronCircleUp} size="lg" color="#666" />
         </button>
-        <button type="button" class="btn mx-1" title="Scroll to Bottom" on:click="{() => (logElem.scrollTop = logElem.scrollHeight)}">
-          <Fa icon="{faChevronCircleDown}" size="lg" color="#666" />
+        <button type="button" class="btn mx-1" title="Scroll to Bottom" on:click={() => (logElem.scrollTop = logElem.scrollHeight)}>
+          <Fa icon={faChevronCircleDown} size="lg" color="#666" />
         </button>
-        <button type="button" class="btn mx-1" title="Download shown log lines" on:click="{downloadLogs}">
-          <Fa icon="{faDownload}" size="lg" color="#666" />
+        <button type="button" class="btn mx-1" title="Download shown log lines" on:click={downloadLogs}>
+          <Fa icon={faDownload} size="lg" color="#666" />
         </button>
-        <button type="button" class="btn mx-1" title="Fullscreen" on:click="{fullscreen}">
-          <Fa icon="{faExpandArrowsAlt}" size="lg" color="#666" />
+        <button type="button" class="btn mx-1" title="Fullscreen" on:click={fullscreen}>
+          <Fa icon={faExpandArrowsAlt} size="lg" color="#666" />
         </button>
       </div>
     </div>
     <!-- this might look ugly but it is necessary because whitespaces are preserved in <pre> envs-->
-    <pre bind:this="{logElem}" class="mb-0">{#each logs as line}{@const timestamp = line.substring(0, line.indexOf(' '))}{@const text = line.substring(line.indexOf(' ') + 1)}<span
+    <pre bind:this={logElem} class="mb-0">{#each logs as line}{@const timestamp = line.substring(0, line.indexOf(' '))}{@const text = line.substring(line.indexOf(' ') + 1)}<span
           class="pe-3"
-          >{#if timestampMode !== 'off'}<time datetime="{timestamp}" class="me-1 px-1"
+          >{#if timestampMode !== 'off'}<time datetime={timestamp} class="me-1 px-1"
               >{#if timestampMode === 'local'}{fmtTimestamp(timestamp)}{:else}{timestamp}{/if}</time
             >{/if}<span class="pe-3">{text}</span></span
         >{/each}</pre>
