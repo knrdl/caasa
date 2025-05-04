@@ -12,7 +12,7 @@ COPY client .
 RUN npm run build
 
 
-FROM python:3.12.9-slim
+FROM python:3.12.10-slim
 
 ENV PYTHONUNBUFFERED=TRUE
 

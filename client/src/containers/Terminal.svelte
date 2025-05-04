@@ -1,9 +1,9 @@
 <script lang="ts">
-  import 'xterm/css/xterm.css'
+  import '@xterm/xterm/css/xterm.css'
 
   import { beforeUpdate, onDestroy, onMount, tick } from 'svelte'
-  import { Terminal as XTerm } from 'xterm'
-  import { FitAddon } from 'xterm-addon-fit'
+  import { Terminal as XTerm } from '@xterm/xterm'
+  import { FitAddon } from '@xterm/addon-fit'
   import api from '../api'
   import { messageBus } from '../messages/message-store'
   import { slide } from 'svelte/transition'
