@@ -36,7 +36,8 @@ services:
     ports:
       - "8080:8080"
     volumes:
-      - /var/run/docker.sock:/var/run/docker.sock
+      - /var/run/docker.sock:/var/run/docker.sock  # for Docker
+      # - /run/user/1000/podman/podman.sock:/var/run/docker.sock  # for Podman
     mem_limit: 150m
     cpu_count: 1
 ```
@@ -59,19 +60,21 @@ Roles are defined via environment variables and might contain these permissions:
 
 There are 3 methods available:
 
-#### 2.1 Restful authentication
+#### 2.1 Dummy authentication
 
-To perform logins CaaSa sends http-post requests to the URL defined in the environment variable `AUTH_API_URL`. The requests contain a json body with username and password. The json field names are defined via environment variables `AUTH_API_FIELD_USERNAME` (default: *username*) and `AUTH_API_FIELD_PASSWORD` (default: *password*). A 2XX response code (e.g. *200 OK*) represents a successful login.
+Set the environment variable `AUTH_API_URL=https://wikipedia.org` (or any other server which responds with *200 OK* to a *HTTP POST* request).
 
-#### 2.2 Dummy authentication
-
-Set the environment variable `AUTH_API_URL=https://example.org`. Now you can log in with any username and password combination.
+ Now you can log in with **any** username and password combination.
 
 > :warning: Only useful for tests and demos. Not suitable for productive usage.
 
+#### 2.2 WebForm authentication
+
+To perform logins CaaSa sends *HTTP POST* requests to the URL defined in the environment variable `AUTH_API_URL`. The requests contain a json body with username and password. The json field names are defined via environment variables `AUTH_API_FIELD_USERNAME` (default: *username*) and `AUTH_API_FIELD_PASSWORD` (default: *password*). A 2XX response code (e.g. *200 OK*) represents a successful login.
+
 #### 2.3 WebProxy authentication
 
-CaaSa can read the username from a http request header. This header must be supplied by a reverse proxy in front of CaaSa. It can be specified via the environment variable `WEBPROXY_AUTH_HEADER`. A typical header name is *Remote-User*.
+CaaSa can read the username from a HTTP request header. This header must be supplied by a reverse proxy in front of CaaSa. It can be specified via the environment variable `WEBPROXY_AUTH_HEADER`. A typical header name is *Remote-User*.
 
 > :warning: The header must be supplied by the reverse proxy. A value provided by a malicious client must be overwritten.
 
