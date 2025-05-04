@@ -9,10 +9,11 @@ RUN npm install
 
 COPY client .
 
-RUN npm run build
+RUN npm run check && \
+    npm run build
 
 
-FROM python:3.12.10-slim
+FROM python:3.12.10-alpine
 
 ENV PYTHONUNBUFFERED=TRUE
 
@@ -20,15 +21,8 @@ WORKDIR /app
 
 COPY server .
 
-RUN apt-get update && \
-    apt-get install --yes build-essential && \
-    pip install --no-cache-dir --upgrade pip && \
-    pip install --no-cache-dir -r requirements.txt && \
-    apt-get purge --yes build-essential && \
-    apt-get autoremove --yes && \
-    apt-get clean --yes && \
-    rm -rf /var/lib/apt/lists/*
-    
+RUN apk --no-cache update && \
+    pip install --no-cache-dir -r requirements.txt
 
 EXPOSE 8080/tcp
 
