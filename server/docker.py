@@ -187,7 +187,7 @@ async def get_processes(username: str, container_id: str):
             )
         if len(data['Titles']) == 1:
             data['Titles'] = data['Titles'][0].split()
-        data['Processes'] = [p[0].split() for p in data['Processes']]
+        data['Processes'] = [(p[0].split() if len(p) == 1 else p) for p in data['Processes']]
         titles = [t.lower() for t in data['Titles']]
         procs = []
         for proc in data['Processes']:
