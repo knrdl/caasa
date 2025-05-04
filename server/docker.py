@@ -256,24 +256,20 @@ def _parse_path(path: str):
 
 async def _exec_output(container: DockerContainer, cmd: List[str], timeout=10, **kwargs):
     process = await container.exec(cmd=cmd, **kwargs)
-    async with process.start() as exe:
-        timeout_ctr = 0
+    async with process.start(timeout=timeout) as exe:
         while True:
             details = await process.inspect()
             if details['Running']:
-                if timeout:
-                    timeout_ctr += 1
                 await asyncio.sleep(.1)
-                if timeout_ctr > timeout * 10:
-                    break
             else:
                 break
         details = await process.inspect()
         if details['ExitCode'] != 0:
-            raise Exception('error reading directory')
-        msg = await exe.read_out()
-    if msg:
-        return msg.data.decode('utf8')
+            raise Exception('error executing command')
+        msg = ''
+        while part := await exe.read_out():
+            msg += part.data.decode('utf8')
+    return msg
 
 
 async def list_directory(username: str, container_id: str, path: str):
