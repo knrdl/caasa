@@ -15,8 +15,8 @@
   let runningAction: null | 'start' | 'stop' | 'restart' = null
 
   let container: ContainerInfoLong
-  $: mem_perc = (container?.mem?.used * 100) / container?.mem?.total
-  $: peak_mem_perc = (container?.mem?.max_used * 100) / container?.mem?.total
+  $: mem_perc = ((container?.mem?.used || 0) * 100) / (container?.mem?.total || 0)
+  $: peak_mem_perc = ((container?.mem?.max_used || 0) * 100) / (container?.mem?.total || 0)
   $: image_name = container?.image.name.includes(':') ? container?.image.name.slice(0, container?.image.name.lastIndexOf(':')) : container?.image.name
   $: image_tag = container?.image.name.includes(':') ? container?.image.name.split(':').pop() : 'latest'
 
@@ -220,16 +220,18 @@
       </div>
     {/if}
 
-    {#if container.net}
+    {#if container.net || container.ports?.length > 0}
       <div class="d-flex mb-3">
         <div class="icon-left ms-1 me-3">
           <Fa icon={faNetworkWired} size="2x" />
         </div>
-        <div class="me-5">
-          <div class="mb-1">Network</div>
-          <span title="Received Traffic" class="me-3">▼ {bytes2human(container.net.rx_bytes)}</span>
-          <span title="Sent Traffic">▲ {bytes2human(container.net.tx_bytes)}</span>
-        </div>
+        {#if container.net}
+          <div class="me-5">
+            <div class="mb-1">Network</div>
+            <span title="Received Traffic" class="me-3">▼ {bytes2human(container.net.rx_bytes)}</span>
+            <span title="Sent Traffic">▲ {bytes2human(container.net.tx_bytes)}</span>
+          </div>
+        {/if}
         {#if container.ports?.length > 0}
           <div class="flex-grow-1">
             <div class="mb-1">Ports</div>

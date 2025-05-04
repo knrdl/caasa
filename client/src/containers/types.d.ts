@@ -33,17 +33,17 @@ class ContainerInfoLong {
         'hash': string
     }
     'mem': {
-        'used': number
-        'max_used': number
-        'total': number
-    }
+        'used': number | null
+        'max_used': number | null
+        'total': number | null
+    } | null
     'cpu': {
         'perc': number
-    }
+    } | null
     'net': {
         'rx_bytes': number
         'tx_bytes': number
-    }
+    } | null
     ports: string[]
     env: { [key: string]: string }
     labels: { [key: string]: string }

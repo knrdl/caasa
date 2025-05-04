@@ -9,6 +9,8 @@ AUTH_API_FIELD_PASSWORD = os.getenv('AUTH_API_FIELD_PASSWORD', 'password')
 WEBPROXY_AUTH_HEADER = os.getenv('WEBPROXY_AUTH_HEADER')
 if not AUTH_API_URL and not WEBPROXY_AUTH_HEADER:
     raise Exception('No authentication method given. Please provide the environment variables.')
+if AUTH_API_URL and WEBPROXY_AUTH_HEADER:
+    raise Exception('WebForm authentication and WebProxy authentication cannot both be activated.')
 
 PermissionType = Literal[
     'info', 'info-annotations', 'state', 'logs', 'term', 'procs', 'files', 'files-read', 'files-write']

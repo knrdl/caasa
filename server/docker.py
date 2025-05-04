@@ -129,16 +129,19 @@ async def get_container_info(username: str, container_id: str):
                 cpu_perc = None
 
             mem_used = mem_used_max = mem_total = None
-            if 'usage' in stats['memory_stats']:
-                mem_used = stats['memory_stats']['usage'] - stats['memory_stats'].get('stats', {}).get('cache', 0)
-            mem_used_max = stats['memory_stats'].get('max_usage', None)
-            mem_total = stats['memory_stats'].get('limit', None)
+            try:
+                if 'usage' in stats['memory_stats']:
+                    mem_used = stats['memory_stats']['usage'] - stats['memory_stats'].get('stats', {}).get('cache', 0)
+                mem_used_max = stats['memory_stats'].get('max_usage', None)
+                mem_total = stats['memory_stats'].get('limit', None)
+            except KeyError:
+                mem_used = mem_used_max = mem_total = None
 
             if mem_total is not None and mem_total == mem_used_max and mem_total > 1024 ** 5:
                 mem_total = mem_used_max = None
 
-            rx_bytes = sum([v['rx_bytes'] for v in stats['networks'].values()])
-            tx_bytes = sum([v['tx_bytes'] for v in stats['networks'].values()])
+            rx_bytes = sum([v['rx_bytes'] for v in stats.get('networks', {}).values()])
+            tx_bytes = sum([v['tx_bytes'] for v in stats.get('networks', {}).values()])
         else:
             cpu_perc = mem_used = mem_used_max = mem_total = rx_bytes = tx_bytes = None
         if len(container['Args']) > 0 and container['Path'] == container['Args'][0]:
@@ -163,7 +166,7 @@ async def get_container_info(username: str, container_id: str):
             'mem': {'used': mem_used, 'max_used': mem_used_max, 'total': mem_total} if running else None,
             'cpu': {'perc': cpu_perc} if cpu_perc is not None else None,
             'net': {'rx_bytes': rx_bytes, 'tx_bytes': tx_bytes} if running else None,
-            'ports': sorted(container['NetworkSettings']['Ports'].keys(), key=lambda p: int(p.split('/')[0]))
+            'ports': sorted(container['NetworkSettings'].get('Ports', {}).keys(), key=lambda p: int(p.split('/')[0]))
         }
     else:
         raise Exception('unauthorized to access container')
@@ -184,7 +187,7 @@ async def get_processes(username: str, container_id: str):
             )
         if len(data['Titles']) == 1:
             data['Titles'] = data['Titles'][0].split()
-            data['Processes'] = [p[0].split() for p in data['Processes']]
+        data['Processes'] = [p[0].split() for p in data['Processes']]
         titles = [t.lower() for t in data['Titles']]
         procs = []
         for proc in data['Processes']:
@@ -201,7 +204,7 @@ async def get_processes(username: str, container_id: str):
                         break
                 else:
                     break
-        procs.sort(key=lambda p: proc['hierarchy'])
+        procs.sort(key=lambda p: p['hierarchy'])
         for proc in procs:
             proc['level'] = len(proc['hierarchy']) - 1
             del proc['hierarchy']
