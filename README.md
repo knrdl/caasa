@@ -25,7 +25,7 @@ Restrict permissions per container and user
 version: '2.4'
 services:
   caasa:
-    image: knrdl/caasa
+    image: knrdl/caasa  # or: ghcr.io/knrdl/caasa
     restart: always
     environment:
       ROLES_caasa_admin_basic: info, state, logs, procs, files, files-read
