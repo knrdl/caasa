@@ -26,7 +26,7 @@
         <button
           type="button"
           class="btn d-flex border-top border-bottom"
-          style="cursor: pointer"
+          style="cursor: pointer; text-align: left"
           on:click={() => dispatch('select-container', container)}
           class:bg-dark={isSelected}
           class:text-light={isSelected}
