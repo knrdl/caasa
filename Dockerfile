@@ -13,7 +13,7 @@ RUN npm run check && \
     npm run build
 
 
-FROM python:3.12.10-alpine
+FROM python:3.13.9-alpine3.22
 
 ENV PYTHONUNBUFFERED=TRUE
 
