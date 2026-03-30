@@ -1,4 +1,4 @@
 aiodocker==0.26.0
-aiohttp==3.13.3 
+aiohttp==3.13.4 
 starlette==1.0.0
 uvicorn[standard]==0.42.0
